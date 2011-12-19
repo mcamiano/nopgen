@@ -1,0 +1,81 @@
+#
+. noplib.sh 
+
+TABLE="echo customer"
+ONCEONLY="echo"
+fieldnames="db_names"
+keylist="db_keys"
+UserMessageBlock="getusermsgs"
+
+
+block local_column_list <<"EOT"
+   ${4:-l}$1.$2 $3
+EOT
+
+
+block local_keylist <<"EOT"
+   $1.$2 = ${4:-l}$1.$2 $3
+EOT
+
+block StdINPUTInterruptClause <<"EOT"
+  ON KEY ( INTERRUPT )
+    INITIALIZE ${2:-l}$1.* TO NULL
+    ERROR "User cancelled operation"
+    SLEEP 2
+    EXIT INPUT
+EOT
+
+
+block infield_case <<"EOT"
+    WHEN infield( $2 )
+      CALL Pick$2() RETURNING ${3:-l}2$1.*
+
+      IF NOT int_flag THEN
+	LET ${3:-l}$1.$2 = ${3:-l}2$1.$2
+	DISPLAY BY NAME ${3:-l}$1.$2
+	NEXT FIELD $2
+      END IF
+EOT
+
+
+# Describe a function template
+# tablename, column1=1, funcprefix
+
+block DeleteFunction <<"EOT"
+  FUNCTION ${3:-Delete}$1()
+    DEFINE
+      l$1 RECORD LIKE $1.*
+
+    LET l$1.$2 = NULL
+
+    INPUT BY NAME 
+       paste local_column_list fieldnames
+
+    ON KEY (CONTROL-F)
+
+      CASE   # infield( $1.* )
+         paste infield_case fieldnames
+      END CASE  # infield( $1.* )
+
+    paste StdINPUTInterruptClause ONCEONLY
+
+    AFTER INPUT
+       IF NOT int_flag THEN
+	  DELETE FROM $1
+	  WHERE 
+             paste local_kelist keylist
+	  ERROR "Row deleted."
+	  SLEEP 2
+       END IF
+    END INPUT
+
+    $UserMessageBlock
+
+    CLEAR FORM
+
+    RETURN
+
+  END FUNCTION   # ${3:-Delete}$1()
+EOT
+
+paste DeleteFunction TABLE

@@ -1,0 +1,34 @@
+  FUNCTION ${3:-Delete}$1()
+    DEFINE
+      l$1 RECORD LIKE $1.*
+
+    LET l$1.$2 = NULL
+
+    INPUT BY NAME 
+       paste local_column_list fieldnames
+
+    ON KEY (CONTROL-F)
+
+      CASE   # infield( $1.* )
+         paste infield_case fieldnames
+      END CASE  # infield( $1.* )
+
+    paste StdINPUTInterruptClause ONCEONLY
+
+    AFTER INPUT
+       IF NOT int_flag THEN
+	  DELETE FROM $1
+	  WHERE 
+             paste local_kelist keylist
+	  ERROR "Row deleted."
+	  SLEEP 2
+       END IF
+    END INPUT
+
+    $UserMessageBlock
+
+    CLEAR FORM
+
+    RETURN
+
+  END FUNCTION   # ${3:-Delete}$1()

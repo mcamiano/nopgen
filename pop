@@ -1,0 +1,8 @@
+
+TABLE="echo customer"
+ONCEONLY="echo"
+fieldnames="db_names"
+keylist="db_keys"
+UserMessageBlock="getusermsgs"
+
+

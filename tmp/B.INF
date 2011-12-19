@@ -1,0 +1,8 @@
+    WHEN infield( $2 )
+      CALL Pick$2() RETURNING ${3:-l}2$1.*
+
+      IF NOT int_flag THEN
+	LET ${3:-l}$1.$2 = ${3:-l}2$1.$2
+	DISPLAY BY NAME ${3:-l}$1.$2
+	NEXT FIELD $2
+      END IF
