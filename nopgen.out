@@ -1,0 +1,340 @@
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+{ 
+   This module contains the following functions:
+fCustomer()
+fProduct()
+fOrder()
+fClient()
+fInvoice()
+
+}
+
+{
+   Facilitate the retrieval of Customer information from the user,
+   validation of each field with respect to the constraints of Customer,
+   and insertion of the record into the Customer table.
+}
+Function fInputCustomer() 
+   Define
+   lCustomer.Customer_id Like Customer.Customer_id, 
+   lCustomer.Customer_name Like Customer.Customer_name, 
+   lCustomer.Address_1 Like Customer.Address_1, 
+   lCustomer.Address_2 Like Customer.Address_2, 
+   lCustomer.Phone_1 Like Customer.Phone_1, 
+   lCustomer.Phone_2 Like Customer.Phone_2, 
+   lCustomer.Zip_Code Like Customer.Zip_Code 
+
+
+   Input 
+   lCustomer.Customer_id , 
+   lCustomer.Customer_name , 
+   lCustomer.Address_1 , 
+   lCustomer.Address_2 , 
+   lCustomer.Phone_1 , 
+   lCustomer.Phone_2 , 
+   lCustomer.Zip_Code  
+
+   From 
+   Customer.Customer_id , 
+   Customer.Customer_name , 
+   Customer.Address_1 , 
+   Customer.Address_2 , 
+   Customer.Phone_1 , 
+   Customer.Phone_2 , 
+   Customer.Zip_Code  
+
+   End Input   # Customer
+
+   Case   # Field Validation for Customer
+   WHEN validate_Customer_id( lCustomer_id ) = FALSE
+     USER_MESSAGE( "Customer_id failed validation checks." )
+     GO FIELD lCustomer_id 
+   WHEN validate_Customer_name( lCustomer_name ) = FALSE
+     USER_MESSAGE( "Customer_name failed validation checks." )
+     GO FIELD lCustomer_name 
+   WHEN validate_Address_1( lAddress_1 ) = FALSE
+     USER_MESSAGE( "Address_1 failed validation checks." )
+     GO FIELD lAddress_1 
+   WHEN validate_Address_2( lAddress_2 ) = FALSE
+     USER_MESSAGE( "Address_2 failed validation checks." )
+     GO FIELD lAddress_2 
+   WHEN validate_Phone_1( lPhone_1 ) = FALSE
+     USER_MESSAGE( "Phone_1 failed validation checks." )
+     GO FIELD lPhone_1 
+   WHEN validate_Phone_2( lPhone_2 ) = FALSE
+     USER_MESSAGE( "Phone_2 failed validation checks." )
+     GO FIELD lPhone_2 
+   WHEN validate_Zip_Code( lZip_Code ) = FALSE
+     USER_MESSAGE( "Zip_Code failed validation checks." )
+     GO FIELD lZip_Code 
+
+   End Case   # Field Validation for Customer
+
+End Function   # Customer
+
+{
+   Facilitate the retrieval of Product information from the user,
+   validation of each field with respect to the constraints of Product,
+   and insertion of the record into the Product table.
+}
+Function fInputProduct() 
+   Define
+   lCustomer.Customer_id Like Customer.Customer_id, 
+   lCustomer.Customer_name Like Customer.Customer_name, 
+   lCustomer.Address_1 Like Customer.Address_1, 
+   lCustomer.Address_2 Like Customer.Address_2, 
+   lCustomer.Phone_1 Like Customer.Phone_1, 
+   lCustomer.Phone_2 Like Customer.Phone_2, 
+   lCustomer.Zip_Code Like Customer.Zip_Code 
+
+
+   Input 
+   lCustomer.Customer_id , 
+   lCustomer.Customer_name , 
+   lCustomer.Address_1 , 
+   lCustomer.Address_2 , 
+   lCustomer.Phone_1 , 
+   lCustomer.Phone_2 , 
+   lCustomer.Zip_Code  
+
+   From 
+   Customer.Customer_id , 
+   Customer.Customer_name , 
+   Customer.Address_1 , 
+   Customer.Address_2 , 
+   Customer.Phone_1 , 
+   Customer.Phone_2 , 
+   Customer.Zip_Code  
+
+   End Input   # Product
+
+   Case   # Field Validation for Product
+   WHEN validate_Customer_id( lCustomer_id ) = FALSE
+     USER_MESSAGE( "Customer_id failed validation checks." )
+     GO FIELD lCustomer_id 
+   WHEN validate_Customer_name( lCustomer_name ) = FALSE
+     USER_MESSAGE( "Customer_name failed validation checks." )
+     GO FIELD lCustomer_name 
+   WHEN validate_Address_1( lAddress_1 ) = FALSE
+     USER_MESSAGE( "Address_1 failed validation checks." )
+     GO FIELD lAddress_1 
+   WHEN validate_Address_2( lAddress_2 ) = FALSE
+     USER_MESSAGE( "Address_2 failed validation checks." )
+     GO FIELD lAddress_2 
+   WHEN validate_Phone_1( lPhone_1 ) = FALSE
+     USER_MESSAGE( "Phone_1 failed validation checks." )
+     GO FIELD lPhone_1 
+   WHEN validate_Phone_2( lPhone_2 ) = FALSE
+     USER_MESSAGE( "Phone_2 failed validation checks." )
+     GO FIELD lPhone_2 
+   WHEN validate_Zip_Code( lZip_Code ) = FALSE
+     USER_MESSAGE( "Zip_Code failed validation checks." )
+     GO FIELD lZip_Code 
+
+   End Case   # Field Validation for Product
+
+End Function   # Product
+
+{
+   Facilitate the retrieval of Order information from the user,
+   validation of each field with respect to the constraints of Order,
+   and insertion of the record into the Order table.
+}
+Function fInputOrder() 
+   Define
+   lCustomer.Customer_id Like Customer.Customer_id, 
+   lCustomer.Customer_name Like Customer.Customer_name, 
+   lCustomer.Address_1 Like Customer.Address_1, 
+   lCustomer.Address_2 Like Customer.Address_2, 
+   lCustomer.Phone_1 Like Customer.Phone_1, 
+   lCustomer.Phone_2 Like Customer.Phone_2, 
+   lCustomer.Zip_Code Like Customer.Zip_Code 
+
+
+   Input 
+   lCustomer.Customer_id , 
+   lCustomer.Customer_name , 
+   lCustomer.Address_1 , 
+   lCustomer.Address_2 , 
+   lCustomer.Phone_1 , 
+   lCustomer.Phone_2 , 
+   lCustomer.Zip_Code  
+
+   From 
+   Customer.Customer_id , 
+   Customer.Customer_name , 
+   Customer.Address_1 , 
+   Customer.Address_2 , 
+   Customer.Phone_1 , 
+   Customer.Phone_2 , 
+   Customer.Zip_Code  
+
+   End Input   # Order
+
+   Case   # Field Validation for Order
+   WHEN validate_Customer_id( lCustomer_id ) = FALSE
+     USER_MESSAGE( "Customer_id failed validation checks." )
+     GO FIELD lCustomer_id 
+   WHEN validate_Customer_name( lCustomer_name ) = FALSE
+     USER_MESSAGE( "Customer_name failed validation checks." )
+     GO FIELD lCustomer_name 
+   WHEN validate_Address_1( lAddress_1 ) = FALSE
+     USER_MESSAGE( "Address_1 failed validation checks." )
+     GO FIELD lAddress_1 
+   WHEN validate_Address_2( lAddress_2 ) = FALSE
+     USER_MESSAGE( "Address_2 failed validation checks." )
+     GO FIELD lAddress_2 
+   WHEN validate_Phone_1( lPhone_1 ) = FALSE
+     USER_MESSAGE( "Phone_1 failed validation checks." )
+     GO FIELD lPhone_1 
+   WHEN validate_Phone_2( lPhone_2 ) = FALSE
+     USER_MESSAGE( "Phone_2 failed validation checks." )
+     GO FIELD lPhone_2 
+   WHEN validate_Zip_Code( lZip_Code ) = FALSE
+     USER_MESSAGE( "Zip_Code failed validation checks." )
+     GO FIELD lZip_Code 
+
+   End Case   # Field Validation for Order
+
+End Function   # Order
+
+{
+   Facilitate the retrieval of Client information from the user,
+   validation of each field with respect to the constraints of Client,
+   and insertion of the record into the Client table.
+}
+Function fInputClient() 
+   Define
+   lCustomer.Customer_id Like Customer.Customer_id, 
+   lCustomer.Customer_name Like Customer.Customer_name, 
+   lCustomer.Address_1 Like Customer.Address_1, 
+   lCustomer.Address_2 Like Customer.Address_2, 
+   lCustomer.Phone_1 Like Customer.Phone_1, 
+   lCustomer.Phone_2 Like Customer.Phone_2, 
+   lCustomer.Zip_Code Like Customer.Zip_Code 
+
+
+   Input 
+   lCustomer.Customer_id , 
+   lCustomer.Customer_name , 
+   lCustomer.Address_1 , 
+   lCustomer.Address_2 , 
+   lCustomer.Phone_1 , 
+   lCustomer.Phone_2 , 
+   lCustomer.Zip_Code  
+
+   From 
+   Customer.Customer_id , 
+   Customer.Customer_name , 
+   Customer.Address_1 , 
+   Customer.Address_2 , 
+   Customer.Phone_1 , 
+   Customer.Phone_2 , 
+   Customer.Zip_Code  
+
+   End Input   # Client
+
+   Case   # Field Validation for Client
+   WHEN validate_Customer_id( lCustomer_id ) = FALSE
+     USER_MESSAGE( "Customer_id failed validation checks." )
+     GO FIELD lCustomer_id 
+   WHEN validate_Customer_name( lCustomer_name ) = FALSE
+     USER_MESSAGE( "Customer_name failed validation checks." )
+     GO FIELD lCustomer_name 
+   WHEN validate_Address_1( lAddress_1 ) = FALSE
+     USER_MESSAGE( "Address_1 failed validation checks." )
+     GO FIELD lAddress_1 
+   WHEN validate_Address_2( lAddress_2 ) = FALSE
+     USER_MESSAGE( "Address_2 failed validation checks." )
+     GO FIELD lAddress_2 
+   WHEN validate_Phone_1( lPhone_1 ) = FALSE
+     USER_MESSAGE( "Phone_1 failed validation checks." )
+     GO FIELD lPhone_1 
+   WHEN validate_Phone_2( lPhone_2 ) = FALSE
+     USER_MESSAGE( "Phone_2 failed validation checks." )
+     GO FIELD lPhone_2 
+   WHEN validate_Zip_Code( lZip_Code ) = FALSE
+     USER_MESSAGE( "Zip_Code failed validation checks." )
+     GO FIELD lZip_Code 
+
+   End Case   # Field Validation for Client
+
+End Function   # Client
+
+{
+   Facilitate the retrieval of Invoice information from the user,
+   validation of each field with respect to the constraints of Invoice,
+   and insertion of the record into the Invoice table.
+}
+Function fInputInvoice() 
+   Define
+   lCustomer.Customer_id Like Customer.Customer_id, 
+   lCustomer.Customer_name Like Customer.Customer_name, 
+   lCustomer.Address_1 Like Customer.Address_1, 
+   lCustomer.Address_2 Like Customer.Address_2, 
+   lCustomer.Phone_1 Like Customer.Phone_1, 
+   lCustomer.Phone_2 Like Customer.Phone_2, 
+   lCustomer.Zip_Code Like Customer.Zip_Code 
+
+
+   Input 
+   lCustomer.Customer_id , 
+   lCustomer.Customer_name , 
+   lCustomer.Address_1 , 
+   lCustomer.Address_2 , 
+   lCustomer.Phone_1 , 
+   lCustomer.Phone_2 , 
+   lCustomer.Zip_Code  
+
+   From 
+   Customer.Customer_id , 
+   Customer.Customer_name , 
+   Customer.Address_1 , 
+   Customer.Address_2 , 
+   Customer.Phone_1 , 
+   Customer.Phone_2 , 
+   Customer.Zip_Code  
+
+   End Input   # Invoice
+
+   Case   # Field Validation for Invoice
+   WHEN validate_Customer_id( lCustomer_id ) = FALSE
+     USER_MESSAGE( "Customer_id failed validation checks." )
+     GO FIELD lCustomer_id 
+   WHEN validate_Customer_name( lCustomer_name ) = FALSE
+     USER_MESSAGE( "Customer_name failed validation checks." )
+     GO FIELD lCustomer_name 
+   WHEN validate_Address_1( lAddress_1 ) = FALSE
+     USER_MESSAGE( "Address_1 failed validation checks." )
+     GO FIELD lAddress_1 
+   WHEN validate_Address_2( lAddress_2 ) = FALSE
+     USER_MESSAGE( "Address_2 failed validation checks." )
+     GO FIELD lAddress_2 
+   WHEN validate_Phone_1( lPhone_1 ) = FALSE
+     USER_MESSAGE( "Phone_1 failed validation checks." )
+     GO FIELD lPhone_1 
+   WHEN validate_Phone_2( lPhone_2 ) = FALSE
+     USER_MESSAGE( "Phone_2 failed validation checks." )
+     GO FIELD lPhone_2 
+   WHEN validate_Zip_Code( lZip_Code ) = FALSE
+     USER_MESSAGE( "Zip_Code failed validation checks." )
+     GO FIELD lZip_Code 
+
+   End Case   # Field Validation for Invoice
+
+End Function   # Invoice
+

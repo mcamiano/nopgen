@@ -1,0 +1,255 @@
+nop: Removing temporary files in e:/nopgen/tmp.
+D: .[$][-]...[-][$].
+D: OpenTempFile(
+D: ProcessLines(
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:$-Coupling fieldnames="db_names "-$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:35
+D: Command:Coupling fieldnames="db_names "
+D: TextLine:
+D: CaseCommand(
+D: HandleText($-
+D: HandleText(Coupling fieldnames="db_names "
+D: HandleText(-$
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:$-Block local_column_list ( TableName, ColumnName, ListDelimiter ) -$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:69
+D: Command:Block local_column_list ( TableName, ColumnName, ListDelimiter ) 
+D: TextLine:
+D: CaseCommand(
+D: Case: Begin Block
+D: StartStoringBlock(
+D: CutRE(
+D: ^[ 	]*[Bb][Ll][Oo][Cc][Kk][ 	]+
+D: 1
+D: 6
+D: String =local_column_list ( TableName, ColumnName, ListDelimiter ) 
+D: local_column_list ( TableName, ColumnName, ListDelimiter ) 
+D: CopyRE(
+D: RegExp = [ 	]*[a-zA-Z0-9_]+
+D: String = local_column_list ( TableName, ColumnName, ListDelimiter ) 
+D: pos = 1
+D: Match on [ 	]*[a-zA-Z0-9_]+ local_column_list ( TableName, ColumnName, ListDelimiter ) 
+D: Match = local_column_list
+D: local_column_list
+D: CopyRE(
+D: RegExp = [ 	]*[(]([ 	]*[^ ()	]+[ 	]*)*[)][ 	]*
+D: String = local_column_list ( TableName, ColumnName, ListDelimiter ) 
+D: pos = 18
+D: Match on [ 	]*[(]([ 	]*[^ ()	]+[ 	]*)*[)][ 	]* local_column_list ( TableName, ColumnName, ListDelimiter ) 
+D: Match =  ( TableName, ColumnName, ListDelimiter ) 
+D: CopyRE(
+D: RegExp = ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+
+D: String =  ( TableName, ColumnName, ListDelimiter ) 
+D: pos = 3
+D: Match on ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+  ( TableName, ColumnName, ListDelimiter ) 
+D: Match =  TableName, ColumnName, ListDelimiter 
+D: OpenTempFile(
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:   l$-TableName-$.$-ColumnName-$ $-ListDelimiter-$
+D: NOTPretextPos:5
+D: PreText:   l
+D: HandleText(   l
+D: CommandPos:1
+D: CommandLength:13
+D: Command:TableName
+D: TextLine:.$-ColumnName-$ $-ListDelimiter-$
+D: CaseCommand(
+D: HandleText($-
+D: HandleText(TableName
+D: HandleText(-$
+D: TextLine:.$-ColumnName-$ $-ListDelimiter-$
+D: NOTPretextPos:2
+D: PreText:.
+D: HandleText(.
+D: CommandPos:1
+D: CommandLength:14
+D: Command:ColumnName
+D: TextLine: $-ListDelimiter-$
+D: CaseCommand(
+D: HandleText($-
+D: HandleText(ColumnName
+D: HandleText(-$
+D: TextLine: $-ListDelimiter-$
+D: NOTPretextPos:2
+D: PreText: 
+D: HandleText( 
+D: CommandPos:1
+D: CommandLength:17
+D: Command:ListDelimiter
+D: TextLine:
+D: CaseCommand(
+D: HandleText($-
+D: HandleText(ListDelimiter
+D: HandleText(-$
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:$-End Block-$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:13
+D: Command:End Block
+D: TextLine:
+D: CaseCommand(
+D: Case: End Block
+D: EndStoringBlock(
+D: OpenTempFile(
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:$-( All the real output is the result of this one statement )-$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:63
+D: Command:( All the real output is the result of this one statement )
+D: TextLine:
+D: CaseCommand(
+D: Case: Comment
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:$-Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:86
+D: Command:Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: TextLine:
+D: CaseCommand(
+D: HandleText($-
+D: HandleText(Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: HandleText(-$
+D: HandleText(
+D: --------------------------------
+D: END: Preparing to process output
+D: --------------------------------
+D: ProcessOutput(
+D: ProcessLines(
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:$-Coupling fieldnames="db_names "-$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:35
+D: Command:Coupling fieldnames="db_names "
+D: TextLine:
+D: CaseCommand(
+D: Case: Coupling Definition
+D: EvalCoupDef(
+D: CutRE(
+D: ^[ 	]*[cC][oO][uU][pP][lL][iI][nN][gG][ 	]+
+D: 1
+D: 9
+D: String =fieldnames="db_names "
+D: TextLine:
+D: NOTPretextPos:2
+D: PreText:
+D: HandleText(
+D: CommandPos:0
+D: HandleText(
+D: ProcessLines(
+D: HandleText(
+D: ProcessLines(
+D: HandleText(
+D: ProcessLines(
+D: ParseTextLine(
+D: TextLine:$-Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:86
+D: Command:Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: TextLine:
+D: CaseCommand(
+D: Case: Paste
+D: PasteBlock(
+D: CutRE(
+D: ^[ 	]*[Pp][Aa][Ss][Tt][Ee][ 	]+
+D: 1
+D: 6
+D: String =local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: CopyRE(
+D: RegExp = [ 	]*[a-zA-Z0-9_]+
+D: String = local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: pos = 1
+D: Match on [ 	]*[a-zA-Z0-9_]+ local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: Match = local_column_list
+D: ValidBlock(
+D: CutRE(
+D: [ 	]*[a-zA-Z0-9_]+
+D: 1
+D: 17
+D: String = ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: CopyRE(
+D: RegExp = ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+
+D: String =  ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: pos = 3
+D: Match on ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+  ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: Match =  TableName, ColumnName, ListDelimiter 
+D: CutRE(
+D: ^[ 	]*[(]
+D: 1
+D: 2
+D: String = TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: CutRE(
+D: ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+
+D: 1
+D: 38
+D: String =) In fieldnames () 
+D: CutRE(
+D: [)][ 	]*[Ii][Nn][ 	]*
+D: 1
+D: 5
+D: String =fieldnames () 
+D: CopyRE(
+D: RegExp = [ 	]*[a-zA-Z0-9_]+
+D: String = fieldnames () 
+D: pos = 1
+D: Match on [ 	]*[a-zA-Z0-9_]+ fieldnames () 
+D: Match = fieldnames
+D: CutRE(
+D: [ 	]*[a-zA-Z0-9_]+
+D: 1
+D: 10
+D: String = () 
+D: CopyRE(
+D: RegExp = ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+
+D: String =  () 
+D: pos = 0
+D: No Match on ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+
+D: CutRE(
+D: [ 	]*[(]
+D: 1
+D: 2
+D: String =) 
+D: CutRE(
+D: ([ 	]*[a-zA-Z0-9_]+[ 	]*,?[ 	]*)+
+D: 0
+D: String =) 
+D: CutRE(
+D: [)][ 	]*$
+D: 1
+D: 2
+D: String =
+D: CommandLine = d:/bin/sh.exe db_names 
+D: TextLine:
+D: NOTPretextPos:2
+D: PreText:
+D: HandleText(
+D: CommandPos:0
+D: HandleText(
+
+
+
+
+

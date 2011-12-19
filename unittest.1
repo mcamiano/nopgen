@@ -1,0 +1,83 @@
+                    -- Received a PASTE directive
+
+D: ParseTextLine(
+D: TextLine:$-Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+D: NOTPretextPos:1
+D: CommandPos:1
+D: CommandLength:86
+D: Command:Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: TextLine:
+D: CaseCommand(
+D: Case: Paste
+
+
+                    -- Dispatched the PASTE handler
+D: PasteBlock(
+D: CutRE(
+D: ^[ 	]*[Pp][Aa][Ss][Tt][Ee][ 	]+
+D: 1
+D: 6
+
+                    -- Verify the BLOCK name
+
+D: String =local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: CopyRE(
+D: RegExp = [ 	]*[a-zA-Z0-9_]+
+D: String = local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: pos = 1
+D: Match on [ 	]*[a-zA-Z0-9_]+ local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: ValidBlock(
+
+                    -- Get the list of instantiating parameters for the PASTE
+
+D: CutRE(
+D: [ 	]*[a-zA-Z0-9_]+
+D: 1
+D: 17
+D: String = ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: CopyRE(
+D: RegExp = [ 	]*[(][^)]*[)][ 	]*
+D: String =  ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: pos = 1
+D: Match on [ 	]*[(][^)]*[)][ 	]*  ( TableName, ColumnName, ListDelimiter ) In fieldnames () 
+D: CutRE(
+D: ^[ 	]*[(]
+D: 1
+D: 2
+D: String = TableName, ColumnName, ListDelimiter ) In fieldnames () 
+
+                    -- RE made unintended match. The String should have been
+-- TableName, ColumnName, ListDelimiter )
+
+
+D: CutRE(
+D: [)][ 	]*$
+D: 58
+D: 2
+D: String = ( TableName, ColumnName, ListDelimiter ) In fieldnames (
+D: CutString(
+D:  ( TableName, ColumnName, ListDelimiter ) In fieldnames (
+D: 1
+D: 59
+D: String =
+
+                    -- Further unintended matches. 
+                    -- It should match against the longest rightmost string
+
+D: CopyRE(
+D: RegExp = ^[ 	]*[cC][oO][uU][pP][lL][iI][nN][gG][ 	]+
+D: String = 
+D: pos = 0
+D: No Match on ^[ 	]*[cC][oO][uU][pP][lL][iI][nN][gG][ 	]+
+D: CutString(
+Fatal Error: CutString(): Null search string argument.
+
+
+
+
+GAWK.EXE: warning: failure status (-1) on pipe close of "cat e:/nopgen/tmp/fulltext" (No children).
+  input line number 6, file `patternfile'
+  source line number 938, file `e:/nopgen/nopgen.awk'
+GAWK.EXE: warning: failure status (-1) on pipe close of "cat 1>&2" (No children).
+  input line number 6, file `patternfile'
+  source line number 938, file `e:/nopgen/nopgen.awk'

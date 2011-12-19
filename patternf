@@ -1,89 +1,42 @@
-$-Coupling fieldnames="db_names "-$
-$-Coupling tbl_fld_names="db_tbl_fld "-$
-$-Coupling keylist="db_keys "-$
-$-Coupling ONCEONLY="echo"-$
-$-Coupling UserMessageBlock="getusermsgs"-$
+$-Coupling fieldnames="db_names"-$
+$-Coupling db_tables="db_tables"-$
+$-Block local_column_defs ( TableName, ColumnName, ListDelimiter ) -$   l$-TableName-$.$-ColumnName-$ Like $-TableName-$.$-ColumnName-$$-ListDelimiter-$ $-End Block-$ 
 
+$-Block local_column_list ( TableName, ColumnName, ListDelimiter ) -$   l$-TableName-$.$-ColumnName-$ $-ListDelimiter-$ $-End Block-$ 
 
-$-Block local_column_list ( TableName, ColumnName, ListDelimiter ) -$
-   l$-TableName-$.$-ColumnName-$ $-ListDelimiter-$
-$-End Block-$
+$-Block functionlist ( tablename ) -$f$-tablename-$()$-End Block-$ 
 
+$-Block table_column_list ( TableName, ColumnName, ListDelimiter ) -$   $-TableName-$.$-ColumnName-$ $-ListDelimiter-$ $-End Block-$ 
 
-$-Block local_keylist ( TableName, ColumnName, ListDelimiter ) -$
-   $-tablename-$.$-ColumnName-$ = l$-tablename-$.$-ColumnName-$ $-ListDelimiter-$
-$-End Block-$
+$-Block when_clauses ( TableName, ColumnName, ListDelimiter ) -$   WHEN validate_$-ColumnName-$( l$-ColumnName-$ ) = FALSE
+     USER_MESSAGE( "$-ColumnName-$ failed validation checks." )
+     GO FIELD l$-ColumnName-$ $-End Block-$ $-(when_clauses)-$
 
-$-Block StdINPUTInterruptClause ( tablename ) -$
-  ON KEY ( INTERRUPT )
-    INITIALIZE l$-tablename-$.* TO NULL
-    ERROR "User cancelled operation"
-    SLEEP 2
-    EXIT INPUT
-$-End Block-$
+$-Block fInputTABLENAME ( TableName ) -$
+{
+   Facilitate the retrieval of $-TableName-$ information from the user,
+   validation of each field with respect to the constraints of $-TableName-$,
+   and insertion of the record into the $-TableName-$ table.
+}
+Function fInput$-TableName-$() 
+   Define
+$-Paste local_column_defs ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
 
-
-$-Block infield_case ( TableName, ColumnName ) -$
-
-    WHEN infield( $-ColumnName-$ )
-      CALL Pick$-ColumnName-$() RETURNING l2$-tablename-$.*
-
-      IF NOT int_flag THEN
-	LET l$-tablename-$.$-ColumnName-$ = l2$-tablename-$.$-ColumnName-$
-	DISPLAY BY NAME l$-tablename-$.$-ColumnName-$
-	NEXT FIELD $-ColumnName-$
-      END IF
-
-$-End Block-$
-
-
-$-( Describe a function which deletes a row based on user input )-$
-
-
-$-Block DeleteFunction ( tablename, column1=1, FuncName="Delete" )-$
-
-  FUNCTION $-FuncName-$$-tablename-$()
-    DEFINE
-      l$-tablename-$ RECORD LIKE $-tablename-$.*
-
-    LET l$-tablename-$.$-column1-$ = NULL
-
-    INPUT BY NAME 
-$-Paste local_column_list for each ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
-
-    ON KEY (CONTROL-F)
-
-      CASE   # infield( $-tablename-$.* )
-$-Paste infield_case for each ( TableName, ColumnName ) In tbl_fld_names ( tablename ) -$
-      END CASE  # infield( $-tablename-$.* )
-
-$-Paste StdINPUTInterruptClause for each () in ONCEONLY () -$
-
-    AFTER INPUT
-       IF NOT int_flag THEN
-	  DELETE FROM $-tablename-$
-	  WHERE 
-$-Paste local_kelist ( TableName, ColumnName, ListDelimiter) In keylist ( tablename ) -$
-	  ERROR "Row deleted."
-	  SLEEP 2
-       END IF
-    END INPUT
-
-$-( include some standardized program code here inline )-$
-
-$- UserMessageBlock -$
-
-    CLEAR FORM
-
-    RETURN
-
-  END FUNCTION   # $-FuncName-$$-tablename-$()
-
-$-End Block-$
-
-
-$-( All the real output is the result of this one statement )-$
-
-
+   Input 
 $-Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+   From 
+$-Paste table_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+   End Input   # $-TableName-$
 
+   Case   # Field Validation for $-TableName-$
+$-Paste when_clauses ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+   End Case   # Field Validation for $-TableName-$
+
+End Function   # $-TableName-$
+$-End Block-$
+
+{ 
+   This module contains the following functions:
+$-Paste functionlist ( tablename ) In db_tables () -$
+}
+$-Paste fInputTABLENAME ( TableName ) In db_tables () -$
