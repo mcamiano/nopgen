@@ -1,22 +1,20 @@
-NopGen was an exploratory project to consider how factor out the dependencies
-from among source code modules, to derive common patterns and integrate new 
-modules in terms of existing patterns. 
+NopGen was an exploratory project to consider how factor out the dependencies from among source code modules, to derive common patterns and integrate new modules in terms of existing patterns. 
 
 NopGen was a compositional language, mapping data streams into source code.
 
-NopGen was a skunkworks project.  Being implemented in AWK, the tool did its 
-job very slowly, and it was very buggy. The effort to fix it is not at all 
-worth it, given that a multitude of interconnected templating systems and
-transformational languages have far surpassed its original intent.  It is 
-now trivial -- use PHP or XSLT or HAML to act as the code composition engine. 
+At the time I was learning a bit of calculus, and it was very exciting to consider the possibilities.  
 
-At the time I was learning a bit of calculus, and it was very exciting to 
-consider the possibilities.  Then I discovered Charles Goldfarb's SGML Bible, 
-and a more literate colleague mentioned the entire family of LISP languages.  
+The NopGen markup, using delimited text with attributed blocks, was purely a case of convergent evolution. 
+I did not know about SGML while implementing NopGen's and XML didn't yet exist even as hype.
+The notation was inspired by a need to conserve the source code identity, byte for byte, so that two factorings could be demonstrated to be equivalent. 
+Then I discovered Charles Goldfarb's SGML Bible, and a more literate colleague mentioned the entire family of LISP languages.  
+It was deflating to know that others had explored this wheel decades before my clunky, squarish version. 
 
-Others had explored this wheel decades before my clunky, squarish version.
-Still, Nopgen got me interested in SGML, then Scheme and DSSSL, and then 
-XML and XSLT.  Thus, I'm posting this for posterities' sake. 
+NopGen was a skunkworks project. Implemented in AWK, the tool worked slowly and it was buggy.
+The effort to fix it is not at all worth it, given that a multitude of interconnected templating systems and transformational languages have far surpassed its original intent. 
+It is now trivial to use PHP or XSLT or any of many Ruby DSLs to act as a source code composition engine, and some languages like Ruby have metacoding as a core idiom.
+
+Nopgen got me interested in SGML, then Scheme and DSSSL, XML and XSLT.  
 
 
                                   NOPGEN
