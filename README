@@ -1,3 +1,23 @@
+NopGen was an exploratory project to consider how factor out the dependencies
+from among source code modules, to derive common patterns and integrate new 
+modules in terms of existing patterns. 
+
+NopGen was a compositional language, mapping data streams into source code.
+
+NopGen was a skunkworks project.  Being implemented in AWK, the tool did its 
+job very slowly, and it was very buggy. The effort to fix it is not at all 
+worth it, given that a multitude of interconnected templating systems and
+transformational languages have far surpassed its original intent.  It is 
+now trivial -- use PHP or XSLT or HAML to act as the code composition engine. 
+
+At the time I was learning a bit of calculus, and it was very exciting to 
+consider the possibilities.  Then I discovered Charles Goldfarb's SGML Bible, 
+and a more literate colleague mentioned the entire family of LISP languages.  
+
+Others had explored this wheel decades before my clunky, squarish version.
+Still, Nopgen got me interested in SGML, then Scheme and DSSSL, and then 
+XML and XSLT.  Thus, I'm posting this for posterities' sake. 
+
 
                                   NOPGEN
 
