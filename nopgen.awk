@@ -2,7 +2,6 @@
 # Copyright 1992 by Mitch C. Amiano
 # All Rights Reserved.
 # No claim is made as to the appropriateness of this software to any task.
-# Use at your own risk. 
 # No warranty is expressed or implied.
 #
 # Note: Since Awk scripts are interpreted, not compiled, the input interface
@@ -15,13 +14,6 @@
 #   protofile1 protofile1... protofileN
 #
 # Output interface: stdout
-#
-# Legend of Regular Expresions:
-#
-# [cC][oO][uU][pP][lL][iI][nN][gG]   the word "coupling"
-# [ \t]*                             zero or more whitespace characters
-# [a-zA-Z0-9_]+                      a legal identifier (at least one char)
-# .*                                 any (or no) characters
 #
 # History: 
 #   March 28, 1993   	Major milestone: core-dumps were occuring from a bug in GNU-AWK
@@ -42,7 +34,7 @@
 #  3. Set up some generally useful regular expressions.
 #  4. Initialize global arrays for name spaces, etc.
 
-BEGIN { IFS = "\n"
+BEGIN { RS = "\n"; ORS="\n"
 
 # Set up Environmental globals 
 
@@ -54,7 +46,8 @@ BEGIN { IFS = "\n"
    WHITESPACE_RE="[ \t]*"
    PARSE_RE="^.*" DEMARCSTART_RE "|" DEMARCEND_RE ".*" DEMARCSTART_RE "|" DEMARCEND_RE ".*$"
    PRETEXT_RE="^.+" DEMARCSTART_RE
-   NOTPRETEXT_RE=DEMARCSTART_RE "|$"
+   NOTPRETEXT_RE="$|"DEMARCSTART_RE 
+   #NOTPRETEXT_RE=DEMARCSTART_RE
    #STATEMENT_RE=PRETEXT_RE ".*" DEMARCEND_RE ".*$"
    COMMAND_RE=DEMARCSTART_RE ".*" DEMARCEND_RE
 
@@ -63,10 +56,12 @@ BEGIN { IFS = "\n"
    BLOCK_RE= "^[ \t]*[Bb][Ll][Oo][Cc][Kk][ \t]+"
    ENDBLOCK_RE= "^[ \t]*[Ee][Nn][Dd][ \t]*[Bb][Ll][Oo][Cc][Kk][ \t]*" WHITESPACE_RE
    EVALUATE_RE="^[ \t]*[Ee][Vv][Aa][Ll][Uu][Aa][Tt][Ee][ \t]+" 
+   EVAL_INDENT_RE="^[ \t]*[Ii][Nn][Dd][Ee][Nn][Tt]" 
    SIMPLECOUP_RE= "^[ \t]*[a-zA-Z0-9_]+[ \t]*$"  
    PASTE_RE= "^[ \t]*[Pp][Aa][Ss][Tt][Ee][ \t]+" 
    COUPLING_RE= "^[ \t]*[cC][oO][uU][pP][lL][iI][nN][gG][ \t]+" 
    COMMENT_RE="^[(].*[)]$"
+   KILL_LINE_RE="^[%]$"
 
    BLOCKNAME_RE="[ \t]*[a-zA-Z0-9_]+" 
    COUPNAME_RE=BLOCKNAME_RE
@@ -96,6 +91,8 @@ BEGIN { IFS = "\n"
    CurrentBlock="fulltext"       # Used to process blocks of text.
    StatementsFound=0             # When 1, forces another parse of text
    OldTempFile=""             # Saves previous pass' temporary file name
+   IngoreRestOfLine=0         # Tells parser to overlook rest of input line
+   NewLineFound=0         # Tells recycle routine that there were no newlines
    
 # Nopgen program configuration constants
 
@@ -138,6 +135,7 @@ BEGIN { IFS = "\n"
       # Names and definitions of couplings
       # Idx = [ "Coupname" ]
    Coupling[ "COPY_ONCE" ]="-c echo 1" 
+   Coupling[ "INDENT" ]="" 
    Coupling[ "COPY_TWICE" ]="-c echo 1\n2;" 
    Coupling[ "NOPGEN_VERSION" ]="-c echo 'NOpGen Version "  NOPGEN_VERSION " Dated '`date`" 
 
@@ -167,6 +165,10 @@ debug_it=0
    while ( StatementsFound == 1 ) {
       ++IterationNumber
 
+      if ( NewLineFound==0 ) {
+         NewLineFound=1
+         HandleText( "", "yes" )
+      }
       close( TEMPFILE )     # Close latest fulltext
 
       OldTempFile = TEMPFILE
@@ -235,7 +237,7 @@ function ProcessLines( Stuff )   {
 
    if ( match( Stuff, COMMAND_RE ) == 0 ) {   # No match
       HandleText( Stuff, "yes" ) 
-
+      NewLineFound=1
    }
    else {                                 # It has a statement inside it
                                           # Figure out which one(s)
@@ -265,9 +267,12 @@ function ProcessLines( Stuff )   {
 
 function ParseTextLine( TextLine,
    PretextPos, PretextLength, Pretext,
-   CommandPos, CommandLength, Command ) {
+   CommandPos, CommandLength, Command,
+   NoNewLine ) {
+#NDebug( "ParseTextLine: " TextLine )
 
    while( length( TextLine ) > 0 )  {              # Continue until used up
+#NDebug( "   while: " TextLine )
 
 # Cut and paste any leading non-statement text.
 
@@ -281,7 +286,6 @@ function ParseTextLine( TextLine,
 	 TextLine = substr( TextLine, PretextPos )
 
 	 HandleText( Pretext, "no" )                  # Stored w/out newline
-
       }   # End if
 
 # The next part must be text within demarcation strings.
@@ -309,16 +313,21 @@ function ParseTextLine( TextLine,
          TextLine = substr( TextLine, CommandLength+1 ) 
 
          CaseCommand( Command )      # Dispatch the proper functions.
-
+         if ( IgnoreRestOfLine == 1 ) { 
+            IgnoreRestOfLine = 0
+            return
+         }
+         
       }   # End if
 
    }   # End while
 
-   if (  NopgenState != NOPGEN_WRITING ) {
-      HandleText( "", "yes" )       # Force increment of line in temp file.
-   } else {
-      HandleText( "", "no" )       # Don't force increment of line in temp file.
-   }
+      if (  NopgenState != NOPGEN_WRITING ) {
+         HandleText( "", "yes" )       # Force increment of line in temp file.
+         NewLineFound=1
+      } else {
+         HandleText( "", "no" )       # Don't force increment of line in temp file.
+      }
 
 }   # End function
 
@@ -334,17 +343,15 @@ CR="\n"
 # Throw the text into the temp file(s).
    
    if ( NopgenState != NOPGEN_WRITING ) {
-
       if ( Increment != "no" ) {
 	 printf( "%s%s", TextLine, CR ) >> TEMPFILE
       }
       else {
 	 printf( "%s", TextLine ) >> TEMPFILE
       }
-
    }
    else {
-
+      TextLine=CutRE( "[]", TextLine )
       if ( Increment != "no" ) {
 	 printf( "%s%s", TextLine, CR ) 
       }
@@ -364,15 +371,34 @@ CR="\n"
 #   
 
 function CaseCommand( stmnt ) {
+#NDebug( "CaseCommand: " stmnt )
 
 # Action: Comments (anything within demarcations and immediate parenthesis).
 # Note that a comment must not have any characters between the parens and
 # the demarcation strings.
 
-   if ( stmnt ~ COMMENT_RE ) {                     # Do action in any state.
+   if ( stmnt ~ COMMENT_RE  ) {             # Do action in any state.
       # Do nothing at all for comments.
       # This way, the comment is effectively 'cut' from the output.
       return
+   }
+
+# Action: Kill Rest Of Line  ( Percent Sign )
+# Ignore rest of input line, including newline
+#
+   if ( stmnt ~ KILL_LINE_RE  ) {        # Do action in any state.
+      if (  NopgenState != NOPGEN_READING && CurrentBlock == "fulltext" )  {
+         # Do nothing at all for comments.
+         # This way, the comment is effectively 'cut' from the output.
+         IgnoreRestOfLine = 1
+         return
+      }
+      else {   # Replace it in its pristine form.
+	 HandleText( DEMARCSTART_STRING, "no" )      # Stored w/out newline
+	 HandleText( stmnt, "no" )                  # Stored w/out newline
+	 HandleText( DEMARCEND_STRING, "no" )      # Stored w/out newline
+	 return
+      }
    }
 
 # BLOCK statements.               Apply to any state.
@@ -496,47 +522,51 @@ TempParamNum, TempBufIdx, TempName, ParamLine ) {
    stmnt=CutRE( "[)][ \t]*$",  stmnt )
    TempParamNum = split( stmnt, Params, PARAMS_SEPER_RE )
 
-# Loop through each coupling parameter and create line of parameters' values
+# Handle any 'Builtin' evaluate couplings here, before user-defined couplings
+   if ( CoupStr ~ EVAL_INDENT_RE ) {
+      #if ( ! (CoupStr in Coupling) ) {
+         #Coupling[ CoupStr ] = Coupling[ "INDENT" ]
+      #}
+#leftoff
+         ParamLine=Coupling[ CoupStr ]
+         for ( TempBufIdx=1; TempBufIdx <= TempParamNum;  ++TempBufIdx ) {
+             ParamLine = ParamLine Params[ TempBufIdx ]
+         }   # End for
+         HandleText( ParamLine, "no" )
+      return
+   }
 
+# Loop through each coupling parameter and create line of parameters' values
    ParamLine=""
    for ( TempBufIdx=1; TempBufIdx <= TempParamNum;  ++TempBufIdx ) {
-
-      TempName = CurrentBlock "," Param[ TempParamBuf[ TempBufIdx ] ]
-
-      if ( TempName in BlockParamLookup ) {
-         ParamLine = ParamLine " " BlockParamValue[ CurrentBlock "," BlockParamNum[ TempName ] ]
-      }
-      else {
-         ParamLine = "Evaluating couple parameters: " ParamLine 
-         FatalError( ParamLine )
-
-      }   # End if
-
+       ParamLine = ParamLine " " Params[ TempBufIdx ]
+#      TempName = CurrentBlock "," Param[ TempParamBuf[ TempBufIdx ] ]
+#      if ( TempName in BlockParamLookup ) {
+#         ParamLine = ParamLine " " BlockParamValue[ CurrentBlock "," BlockParamNum[ TempName ] ]
+#      }
+#      else {
+#         ParamLine = "Evaluating couple parameters: " ParamLine 
+#         FatalError( ParamLine )
+#      }   # End if
    }   # End for
 
 # Create temporary file for evaluation text storage.
 # Better to keep it in temp file because EVALUATE recursion could 
 # overflow the program's limits.
-
    TextFile = sprintf( "%s/evaluate.%d", TEMP_DIRECTORY,  EvalId )
 
 # Create a command line to execute the coupling.
-
-   CommandLine=Coupling[ CoupStr ] " " ParamLine " >> " TextFile
+   CommandLine=SHELLPROG " " Coupling[ CoupStr ] " " ParamLine
 
 # Execute the command line. It is a fatal error if it fails.
-
-   if ( system( CommandLine ) == -1 ) {       # Unexpected error
+   if ( system( CommandLine "> " TextFile ) == -1 ) {       # Unexpected error
       CommandLine=" Evaluating couple: " CommandLine
       FatalError( CommandLine )
    }
 
 # Then recycle the lines obtained through nopgen.
-
-   CommandLine = sprintf( "%s", TextFile )
-
-   while ( getline TextLine < CommandLine > 0 ) {
-      ProcessOutput( TextLine )
+   while ( getline TextLine < TextFile > 0 ) {
+      HandleText( TextLine, "yes" )
    }
    close( CommandLine )
 
@@ -736,7 +766,7 @@ function PasteBlock( PasteCmd, Blkname, BlockParamIdx, Coup, CoupParams, CoupPar
       }
       else {
          if ( ValidBlock( Blkname ) == 0 ) {   # Invalid block
-	    FatalError( "PasteBlock(): block name given is not defined." )
+	    FatalError( "PasteBlock(): block name given (" Blkname ") is not defined." )
          }
          else {
             if ( Blkname == CurrentBlock ) { 
@@ -806,22 +836,22 @@ function PasteBlock( PasteCmd, Blkname, BlockParamIdx, Coup, CoupParams, CoupPar
 
       NumCoupParams = split( CoupParamsLine, CoupParams, PARAMS_SEPER_RE )
 
+# Coupling parameter validation is disabled. The removal of recursive 
+# ProcessLines() calls means that block parameters are no longer defined
+# within the enclosing BLOCK scope. Params must be referenced using $-param-$
+# instead, as in "in couplname ( $-param-$ )".
 # Validate the coupling parameters.  If they are not assigned in a 
 #   previous or current block, then it is a fatal error.
-
       CommandLine = SHELLPROG " " Coupling[ Coup ]
-
       for ( CoupParamsIdx = 1; CoupParamsIdx <= NumCoupParams; ++CoupParamsIdx ) {
-
-	 BlockParamIdx = CurrentBlock "," CoupParams[ CoupParamsIdx ]
-
-	 if ( BlockParamIdx in BlockParamLookup ) {
-	     CommandLine = CommandLine " " BlockParamValue[ BlockParamIdx ]
-	 }
-	 else {
-	    FatalError( "Undefined coupling parameter: " BlockParamIdx )
-	 }   # End if
-
+	 CommandLine = CommandLine " " CoupParams[ CoupParamsIdx ]
+#	 BlockParamIdx = Blkname "," CoupParams[ CoupParamsIdx ]
+#	 if ( BlockParamIdx in BlockParamLookup ) {
+#	     CommandLine = CommandLine " " BlockParamValue[ BlockParamIdx ]
+#	 }
+#	 else {
+#	    FatalError( "Undefined coupling parameter: " BlockParamIdx )
+#	 }   # End if
       }   # End for
 
 # Check for the UNLESS NULL clause, which specifies that the paste operation
@@ -879,7 +909,7 @@ function PasteBlock( PasteCmd, Blkname, BlockParamIdx, Coup, CoupParams, CoupPar
 		  gsub( DEMARCSTART_RE BlockParamName[ Blkname "," BlockParamIdx ] DEMARCEND_RE, BlockParamValue[ Blkname "," BlockParamIdx ], BlockText )
 	       }
 
-# Last leg: send the line out (or reprocess it).
+# Last leg: send the line out.
 
 	       HandleText( BlockText, "yes" )
 
@@ -1111,15 +1141,14 @@ function ValidBlock( BlockName,      Result, Cmmd, ValidCount )   {
 
 }   # End function
 
-# Debug():  Print out an error message and continue processing.
+# NDebug():  Print out an error message and continue processing.
 #
 # Variables:
 #   ErrMessage   (local parameter)
-#function NDebug( ErrMessage )   {
-#printf( "D: %s\r\n", ErrMessage ) | ENVIRON[ "CATPROG" ] " 1>&2"
-#close( ENVIRON[ "CATPROG" ] " 1>&2" )
-#return
-#}
+function NDebug( ErrMessage )   {
+print( "Debug: " ErrMessage ) 
+return
+}
 
 # GetEnvVars():  Import and assign enviromental variables to globals.
 #

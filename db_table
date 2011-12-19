@@ -1,0 +1,7 @@
+#!d:/bin/sh.exe
+#  fieldnames="db_tables "
+echo "Customer"
+echo "Product"
+echo "Order"
+echo "Client"
+echo "Invoice"

@@ -1,0 +1,33 @@
+                                           NOPGEN  OVERVIEW 
+
+DEMARCATION:
+
+   "DEMARCSTART" (default   $-   )    "DEMARCEND"  (default  -$   )
+
+
+COMMANDS:
+
+   COUPLING coupling_name='utilityprog  arg1 arg2 arg3...'
+
+
+   BLOCK block_name ( [ param-1 [="val"] [, param-2,...param-N] ] )
+   END BLOCK block_name
+
+
+
+   EVALUATE coupling ( [ param-1, param-2,... param-N ] )
+
+
+
+   PASTE block_name
+   FOR EACH ( [ field-1, field-2,... field-N ] )
+   IN coupling_name ( [ coup-param-1, coup-param-2,... coup-param-N ] )
+   [ UNLESS NULL ]
+
+
+TEMPLATE PARAMETER EMBEDDING:          $-coupling_name-$
+
+
+EMBEDDED COMMENTS:              $-( This is a comment )-$
+
+

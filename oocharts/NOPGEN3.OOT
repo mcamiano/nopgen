@@ -1,0 +1,448 @@
+TITL 
+OBJ: 0 790 525 AutonomousAgent
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 1055 415 Developer
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 1060 600 ExecutableProgram
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR Arguments
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR Name
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 810 15 Implicit Items
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR ObjectIdentifier
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV AddPart
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV ConnectToInstance
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV Create
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV DisconnectFromInstance
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV DropPart
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV GetAttribute
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV Release
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV SetAttribute
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 110 110 Program
+DESC 147
++Summary: An encoding of a predetermined decision rule.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 50 300 ServerProcess
+DESC 192
++Summary: A transient instantiation of an executable program which may be queried for its knowledge.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 340 15 Template
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 490 255 TemplateComponent
+DESC 144
++Summary: A given portion of a specific template.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: 
++
++References:
+
+OBJ: 1 570 10 User
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 280 425 VariableComponent
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 i 1 0 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 0 -35 100
+CON2 i 2 0 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 6 7 "0,M" "1"
+DESC 159
++Summary: A Template optionally contains TemplateComonent(s).  A TemplateComponent must be contained by one Template.
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 0 0 100
+CON2 g 7 9 "0,M" "1"
+DESC 95
++Summary: A VariableComponent is a TemplateComponent.
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 0 40 50
+CON2 g 4 5 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 m 9 5 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 i 5 9 "1,M" "1"
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 m 6 4 "1,M" "1"
+DESC 105
++Summary: 002.StartProcess 
++
++Constraints:
++   Response:
++      Process-ObjectId
++
++Notes:
++
++References:
+
+CON2 m 4 5 "1,M" "1"
+DESC 101
++Summary: 003.Create
++
++Constraints:
++   Response: 
++      Process-ObjectId
++
++Notes:
++
++References:
+
+CON2 m 6 7 "1,M" "1"
+DESC 103
++Summary: 004.GetContent
++
++Constraints:
++   Response:
++      Component-Content
++
++Notes:
++
++References:
+
+CON3 0 0 50
+CON2 m 8 6 "1,M" "1"
+DESC 110
++Summary: 001.GetWorkingCopy
++
++Constraints:
++   Response:
++      Template-WorkingCopy
++
++Notes:
++
++References:
+
+CON3 -30 -30 100

@@ -1,0 +1,74 @@
+
+c_GrogBoolean gm_Customer_Create()
+{
+return( GROG_FALSE ); 
+}
+#define c_Customer.Create (*c_Customer.Create)
+c_GrogBoolean gm_Customer_Destroy()
+{
+/* Null Body */
+}
+#define c_Customer.Destroy (*c_Customer.Destroy)
+c_GrogBoolean gm_Customer_IsValid()
+{
+}
+#define c_Customer.IsValid (*c_Customer.IsValid)
+c_GrogBoolean gm_Customer_Store()
+{
+/* Null Body */
+}
+#define c_Customer.Store (*c_Customer.Store)
+c_GrogBoolean gm_Customer_Retrieve()
+{
+/* Null Body */
+}
+#define c_Customer.Retrieve (*c_Customer.Retrieve)
+typedef struct {
+int CustomerId;	/* Data Member */
+char* CustomerName;	/* Data Member */
+char* Street;	/* Data Member */
+c_Order *Orders[99];	/* Instance Connection Pointer */
+c_PostalAddress *MailingAddress[3];	/* Whole Part Structure Pointer
+c_ClientPerson *ContactPerson[8];	/* Whole Part Structure Pointer
+c_GrogBoolean (*Create)() = gm_Customer_Create;	/* Method Member */
+c_GrogBoolean (*Destroy)() = gm_Customer_Destroy;	/* Method Member */
+c_GrogBoolean (*IsValid)() = gm_Customer_IsValid;	/* Method Member */
+c_GrogBoolean (*Store)() = gm_Customer_Store;	/* Method Member */
+c_GrogBoolean (*Retrieve)() = gm_Customer_Retrieve;	/* Method Member */
+} c_Customer;
+c_GrogBoolean gm_Order_Create()
+{
+/* Null Body */
+}
+#define c_Order.Create (*c_Order.Create)
+c_GrogBoolean gm_Order_Destroy()
+{
+/* Null Body */
+}
+#define c_Order.Destroy (*c_Order.Destroy)
+c_GrogBoolean gm_Order_IsValid()
+{
+}
+#define c_Order.IsValid (*c_Order.IsValid)
+c_GrogBoolean gm_Order_Store()
+{
+/* Null Body */
+}
+#define c_Order.Store (*c_Order.Store)
+c_GrogBoolean gm_Order_Retrieve()
+{
+/* Null Body */
+}
+#define c_Order.Retrieve (*c_Order.Retrieve)
+typedef struct {
+int OrderId;	/* Data Member */
+long OrderNumber;	/* Data Member */
+char* OrderDate;	/* Data Member */
+c_Customer *Customers[1];	/* Instance Connection Pointer */
+c_Vendor *FillingVendor[99];	/* Whole Part Structure Pointer
+c_GrogBoolean (*Create)() = gm_Order_Create;	/* Method Member */
+c_GrogBoolean (*Destroy)() = gm_Order_Destroy;	/* Method Member */
+c_GrogBoolean (*IsValid)() = gm_Order_IsValid;	/* Method Member */
+c_GrogBoolean (*Store)() = gm_Order_Store;	/* Method Member */
+c_GrogBoolean (*Retrieve)() = gm_Order_Retrieve;	/* Method Member */
+} c_Order;

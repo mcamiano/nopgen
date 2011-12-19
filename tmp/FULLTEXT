@@ -1,0 +1,53 @@
+
+$-%-$
+$-%-$
+$-%-$
+$-Coupling DataMembers="gcl_name -t data -c "-$$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-Coupling InstanceMembers="gcl_name -t instance -c "-$$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-Coupling WholePartMembers="gcl_name -t wholepart -c "-$$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-Coupling ClassMethod="gcl_methodlist -c "-$$-%-$
+$-Coupling MethodArguments="gcl_methodargs -c "-$$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-Coupling MethodMembers="gcl_name -t method -c "-$$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-Coupling MethodBody="gcl_methodbody -t method -c "-$$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-Coupling Classes="gcl_name -t class "-$$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-%-$
+$-Paste GrogClass ( ClassName ) in Classes ()-$$-%-$

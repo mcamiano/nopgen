@@ -1,0 +1,17 @@
+			Standard Object Specification 
+
+Class Name: Template
+
+Summary: A configurable collection of textual components.
+
+Constraints:
+
+   Object State Attributes: none
+
+
+   Instance Connections: none
+
+
+   Whole-Part Structures:
+      TemplateComponent PART SET OF 0 TO MANY ORDERED
+      componentparts:

@@ -1,0 +1,194 @@
+TITL 
+OBJ: 0 500 20 GenericTemplate
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV GetDocument
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 605 200 TemplateComponent
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR Content
+DESC 60
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV GetContent
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV SetContent
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 515 410 TemplateParameter
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR ParameterName
+DESC 60
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 375 205 TemplateParameterSet
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV SetParameterSet
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 1 2 "1,M" "1"
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 0 1 "0,M" "1"
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 40 0 70
+CON2 w 3 2 "1,M" "1"
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 0 3 "0,1" "1"
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+

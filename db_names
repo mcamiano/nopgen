@@ -1,0 +1,9 @@
+#!d:/bin/sh.exe
+#  fieldnames="db_names "
+echo "Customer Customer_id ,"
+echo "Customer Customer_name ,"
+echo "Customer Address_1 ,"
+echo "Customer Address_2 ,"
+echo "Customer Phone_1 ,"
+echo "Customer Phone_2 ,"
+echo "Customer Zip_Code "

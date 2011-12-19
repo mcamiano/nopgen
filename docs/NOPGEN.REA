@@ -1,0 +1,33 @@
+NOPGEN 
+
+
+
+Problem Domain
+
+   Small amount of Human RAM
+
+   Dependancies in application software
+
+   Code inflexible to external and internal changes
+
+   Example:
+      Database Apps use data dictionary for data structures
+
+      Software editing process makes only cursory manual use
+
+      Hard coded Meta-Data,  unfactored, and unidentified
+
+
+
+Proposed Solution
+
+   Source code manipulation device
+
+   Allows factoring of meta-data
+
+   Automates typical editing process
+
+   Template oriented
+
+   Editing rules & meta-data couplings
+

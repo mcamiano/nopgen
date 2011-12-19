@@ -1,0 +1,15 @@
+
+$-Paste GrogClassMethodDefinition ( ClassName, MethodName, ReturnType ) in ClassMethod ( Customer )-$$-%-$
+typedef struct {
+$-Paste GrogClassDataMember ( ColumnName, DataType ) In DataMembers ( Customer ) -$$-%-$
+$-Paste GrogClassInstanceMember ( ColumnName, InstanceClassName, UpperBound ) In InstanceMembers ( Customer ) -$$-%-$
+$-Paste GrogClassWholePartMember ( ColumnName, PartClassName, UpperBound ) In WholePartMembers ( Customer ) -$$-%-$
+$-Paste GrogClassMethodMember ( ClassName, MethodName, ReturnType ) In MethodMembers ( Customer ) -$$-%-$
+} c_Customer;
+$-Paste GrogClassMethodDefinition ( ClassName, MethodName, ReturnType ) in ClassMethod ( Order )-$$-%-$
+typedef struct {
+$-Paste GrogClassDataMember ( ColumnName, DataType ) In DataMembers ( Order ) -$$-%-$
+$-Paste GrogClassInstanceMember ( ColumnName, InstanceClassName, UpperBound ) In InstanceMembers ( Order ) -$$-%-$
+$-Paste GrogClassWholePartMember ( ColumnName, PartClassName, UpperBound ) In WholePartMembers ( Order ) -$$-%-$
+$-Paste GrogClassMethodMember ( ClassName, MethodName, ReturnType ) In MethodMembers ( Order ) -$$-%-$
+} c_Order;

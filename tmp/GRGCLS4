@@ -1,0 +1,5 @@
+c_$-ReturnType-$ gm_$-ClassName-$_$-MethodName-$($-Paste MethodArgs ( ArgClassType, ArgName, Delimiter ) in MethodArguments ( $-MethodName-$ )-$)
+{
+$-Evaluate MethodBody ( $-ClassName-$, $-MethodName-$ )-$$-%-$
+}
+#define c_$-ClassName-$.$-MethodName-$ (*c_$-ClassName-$.$-MethodName-$)

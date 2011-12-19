@@ -1,0 +1,30 @@
+			Standard Service Specification 
+
+Class Name: Template
+
+Service Name: Create
+
+Summary: Allocate resources and initialize a new template.
+
+Preconditions...
+
+   Request Parameters: none
+
+   Object State: none
+
+   Other: none
+
+Transforms:
+
+   ALLOCATE RESOURCES
+
+
+Postconditions...
+
+   Response Feedback:
+      STATUS
+
+   Object State:
+
+   Other:
+

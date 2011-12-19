@@ -1,0 +1,331 @@
+TITL 
+OBJ: 0 790 525 AutonomousAgent
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 1055 415 Developer
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 1060 600 ExecutableProgram
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR Arguments
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR Name
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 810 15 Implicit Items
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR ObjectIdentifier
+DESC 60
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV AddPart
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV ConnectToInstance
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV Create
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV DisconnectFromInstance
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV DropPart
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV GetAttribute
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV Release
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV SetAttribute
+DESC 93
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 85 10 Template
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 180 230 TemplateComponent
+DESC 144
++Summary: A given portion of a specific template.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: 
++
++References:
+
+OBJ: 0 35 390 VariableComponent
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 i 1 0 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 0 -35 100
+CON2 i 2 0 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 4 6 "0,M" "1"
+DESC 161
++Summary: Template optionally contains   VariableComponent(s).  A VariableComponent    must be contained by one Template.
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 -25 -30 100
+CON2 w 4 5 "0,M" "1"
+DESC 157
++Summary: A Template optionally contains TemplateComonent(s).  A TemplateComponent must be contained by one Template.
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 25 0 100
+CON2 g 5 6 "0,M" "1"
+DESC 93
++Summary: A VariableComponent is a TemplateComponent.
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 0 40 50

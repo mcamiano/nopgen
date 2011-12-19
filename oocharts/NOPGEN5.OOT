@@ -1,0 +1,584 @@
+TITL NOpGen Template-oriented source code generator
+OBJ: 0 785 270 FixedComponent
+DESC 146
++Standard Object Specification 
++
++Summary:
++
++Constraints:
++   Object State Attributes:
++
++   Instance Connections:
++
++   Whole-Part Structures:
+
+ATTR TextualContent
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV CreateFixedComponent
+DESC 253
++			Standard Service Specification 
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+SERV GetTextualContent
+DESC 253
++			Standard Service Specification 
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+SERV ReleaseFixedComponent
+DESC 253
++			Standard Service Specification 
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+SERV SetTextualContent
+DESC 253
++			Standard Service Specification 
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+OBJ: 0 515 565 Template
+DESC 148
++Standard Object Specification 
++
++Summary:
++
++Constraints:
++   Object State Attributes:
++
++   Instance Connections:
++
++   Whole-Part Structures:
++
+
+SERV AddComponent
+DESC 248
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
+
+SERV CreateTemplate
+DESC 248
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
+
+SERV DeleteComponent
+DESC 248
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
+
+SERV GetTemplateComponents
+DESC 248
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
+
+SERV ReleaseTemplate
+DESC 248
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
+
+OBJ: 1 535 55 TemplateComponent
+DESC 146
++Standard Object Specification 
++
++Summary:
++
++Constraints:
++   Object State Attributes:
++
++   Instance Connections:
++
++   Whole-Part Structures:
+
+ATTR SequentialPosition
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV GetSequentialPosition
+DESC 252
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+SERV SetSequentialPosition
+DESC 252
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+OBJ: 1 135 595 User
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 1 90 475 UtilityProgram
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 1 465 270 Variable
+DESC 146
++Standard Object Specification 
++
++Summary:
++
++Constraints:
++   Object State Attributes:
++
++   Instance Connections:
++
++   Whole-Part Structures:
+
+ATTR Name
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV GetName
+DESC 252
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+SERV SetName
+DESC 252
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
++
+
+OBJ: 0 320 475 VariableParameter
+DESC 148
++Standard Object Specification 
++
++Summary:
++
++Constraints:
++   Object State Attributes:
++
++   Instance Connections:
++
++   Whole-Part Structures:
++
+
+SERV GetParameterValue
+DESC 248
++Standard Service Specification 
++
++Class Name: 
++
++Service Name:
++
++Summary:
++
++Preconditions...
++   Request Parameters:
++
++   Object State:
++
++   Other:
++
++   Transforms:
++
++Postconditions...
++   Response Feedback:
++
++   Object State:
++
++   Other:
+
+CON2 g 2 0 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 m 3 1 "0,M" "1"
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 1 2 "0,M" "1"
+DESC 114
++Summary:
++
++Constraints: Odered PART SET OF 0 TO MANY TemplateComponent   templateparts
++
++Notes:
++
++References:
+
+CON2 g 2 5 "0,M" "1"
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 5 6 "0,M" "1"
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 5 1 "0,M" "1"
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 m 6 4 "0,M" "1"
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 i 3 4 "0,M" "1"
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+

@@ -1,0 +1,35 @@
+			Standard Service Specification 
+
+Class Name: Variable
+
+Service Name: GetName
+
+Summary: Access and respond with the value of the Name attribute.
+
+
+Preconditions...
+
+   Request Parameters: none
+
+
+   Object State:
+      Name
+
+
+   Other: none
+
+
+Transforms: none
+
+
+Postconditions...
+
+   Response Feedback: 
+      Name
+
+   Object State:
+      Name:
+         Name == UNCHANGED
+
+   Other: none
+

@@ -1,0 +1,178 @@
+
+                                  NOPGEN
+
+
+                      Copyright 1992 by Mitch C. Amiano.
+
+                            All Rights Reserved.
+
+    No claim is made as to the appropriateness of this software to any task. 
+
+                            Use at your own risk.
+
+                    No warranty is expressed or implied.
+
+
+                                 SUMMARY
+
+Demarcation of NOPGEN statements from pattern text: (environmentals)
+
+   "DEMARCSTART" (default pattern   $-   )
+   "DEMARCEND"   (default pattern   -$   )
+
+Defining data links:
+
+   COUPLING coupling_name='utilityprog  arg1 arg2 arg3...'
+
+Defining text blocks:
+
+   BLOCK block_name ( [ param-1 [="val"] [, param-2,...param-N] ] )
+   END BLOCK block_name
+
+In line data link evaluation:
+
+   EVALUATE coupling ( [ param-1, param-2,... param-N ] )
+
+Reusing a text block:
+
+   PASTE block_name
+   FOR EACH ( [ field-1, field-2,... field-N ] )
+   IN coupling_name ( [ coup-param-1, coup-param-2,... coup-param-N ] )
+   [ UNLESS NULL ]
+
+Specifying template parameter (point of change/replacement):
+
+   $-coupling_name-$
+
+Embeded Comments:
+ 
+   $-( This is a comment )-$
+
+
+                        Example Pattern File
+
+A sample pattern file follows. Three couplings named "table", "column", 
+and "keyfield" have been predefined, the demarcation patterns are set to
+"$-" and "-$" respectively, and the code has been factored into three
+explicit text blocks.
+
+
+$-BLOCK keylist (key)-$             a list of discrete column variable 
+
+    l$-table-$.$-key-$
+
+$-END BLOCK keylist-$
+
+
+$-BLOCK afterfield (field)-$          The default AFTER FIELD clause
+
+  AFTER FIELD $-field-$
+    IF l$-table-$.$-field-$ IS NULL THEN
+      ERROR $-field-$, " is empty. "
+    END IF  # l$-table-$.$-field-$ IS NULL
+
+$-END BLOCK afterfield-$
+
+
+$-BLOCK infield (field)-$              A default infield clause
+
+    WHEN infield( $-field-$ )
+      CALL Pick$-field-$() RETURNING l2$-table-$.*
+      IF NOT int_flag THEN
+        LET l$-table-$.$-field-$ = l2$-table-$.$-field-$
+        DISPLAY BY NAME l$-table-$.$-field-$
+        NEXT FIELD $-field-$
+      END IF
+
+$-END BLOCK infield-$
+
+
+FUNCTION fEdit$-table-$( l$-table-$ )
+  DEFINE
+    l$-table-$ RECORD LIKE $-table-$.*
+ 
+  INPUT BY NAME 
+    $-PASTE keylist(key) FOR EACH keyfield()-$
+
+  WITHOUT DEFAULTS
+
+     $-PASTE afterfield(field, junkfield) FOR EACH keyfield()-$
+
+     $-(junkfield is ignored by the afterfield block)-$
+
+  ON KEY (CONTROL-F)
+
+    CASE   # infield( $-table-$.* )
+
+       $-PASTE infield(field) FOR EACH column()-$
+
+    END CASE  # infield( $-table-$.* )
+
+  END INPUT
+
+  RETURN ( l$-table-$.* )
+
+END FUNCTION   # fEdit$-table-$()
+
+
+                        Example Output
+
+An example of possible output from the previous example.
+
+The couplings named "table", "column", and "keyfield" evaluated as follows.
+
+table: ( Customer )
+column: ( CustNo, CustName, Addr )
+keyfield: ( CustNo )
+
+FUNCTION fEditCustomer( lCustomer )
+  DEFINE                                        $-table-$
+    lCustomer RECORD LIKE Customer.*            ------------------
+
+  INPUT BY NAME                                 PASTE keylist
+    lCustomer.CustNo                            ------------------
+
+  WITHOUT DEFAULTS
+ 
+  AFTER FIELD CustNo                            PASTE afterfield
+    IF lCustomer.CustNo IS NULL THEN            ------------------
+      ERROR CustNo, " is empty. "                                 |
+    END IF  # lCustomer.CustNo IS NULL          ------------------
+
+
+  ON KEY (CONTROL-F)
+
+    CASE   # infield( Customer.* )
+                                                 PASTE infield
+    WHEN infield( CustNo )                       -----------------
+      CALL PickCustNo() RETURNING l2Customer.*                    |
+      IF NOT int_flag THEN                                        |
+        LET lCustomer.CustNo = l2Customer.CustNo                  |
+        DISPLAY BY NAME lCustomer.CustNo                          |
+        NEXT FIELD CustNo                                         |
+      END IF                                                      |
+                                                                  |
+    WHEN infield( CustName )                                      |
+      CALL PickCustName() RETURNING l2Customer.*                  |
+      IF NOT int_flag THEN                                        |
+        LET lCustomer.CustName = l2Customer.CustName              |
+        DISPLAY BY NAME lCustomer.CustName                        |
+        NEXT FIELD CustName                                       |
+      END IF                                                      |
+                                                                  |
+    WHEN infield( Addr )                                          |
+      CALL PickAddr() RETURNING l2Customer.*                      |
+      IF NOT int_flag THEN                                        |
+        LET lCustomer.Addr = l2Customer.Addr                      |
+        DISPLAY BY NAME lCustomer.Addr                            |
+        NEXT FIELD Addr                                           |
+      END IF                                     -----------------
+
+    END CASE  # infield( Customer.* )
+
+  END INPUT
+
+  RETURN ( lCustomer.* )
+
+END FUNCTION   # fEditCustomer()
+

@@ -1,0 +1,37 @@
+$-Coupling fieldnames="db_names "-$
+$-Coupling db_tables=" -c echo Customer Client Product Order"-$
+$-Block local_column_defs ( TableName, ColumnName, ListDelimiter ) -$   l$-TableName-$.$-ColumnName-$ Like $-TableName-$.$-ColumnName-$$-ListDelimiter-$ $-End Block-$ 
+
+$-Block local_column_list ( TableName, ColumnName, ListDelimiter ) -$   l$-TableName-$.$-ColumnName-$ $-ListDelimiter-$ $-End Block-$ 
+
+$-Block functionlist ( tablename, columnname, listdelimiter ) -$   f$-tablename-$() $-listdelimiter-$  $-End Block-$ 
+
+$-Block table_column_list ( TabName, ColName, ListDelimiter ) -$   $-TabName-$.$-ColName-$ $-ListDelimiter-$ $-End Block-$ 
+
+$-Block when_clauses ( TableName, ColumnName, ListDelimiter ) -$   WHEN validate_$-ColumnName-$( l$-ColumnName-$ ) = FALSE
+     USER_MESSAGE( "$-ColumnName-$ failed validation checks." )
+     GO FIELD l$-ColumnName-$ $-End Block-$ $-(when_clauses)-$
+
+$-Block fInputTABLENAME ( TableName ) -$
+Function fInput$-TableName -$() 
+   Define
+      $-Paste local_column_defs ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+
+   Input 
+      $-Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+   From 
+      $-Paste table_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+   End Input   # $-TableName-$
+
+   Case   # Field Validation for $-TableName-$
+      $-Paste when_clauses ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+   End Case   # Field Validation for $-TableName-$
+
+End Function   # $-TableName-$
+$-End Block-$
+
+{ 
+   This module contains the following functions:
+      $-Paste functionlist ( tablename, columname, listdelimiter ) In db_tables () -$
+}
+$-Paste fInputTABLENAME ( TableName ) In db_tables () -$

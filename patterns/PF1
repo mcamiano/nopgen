@@ -1,0 +1,89 @@
+$-Coupling fieldnames="db_names "-$
+$-Coupling tbl_fld_names="db_tbl_fld "-$
+$-Coupling keylist="db_keys "-$
+$-Coupling ONCEONLY="echo"-$
+$-Coupling UserMessageBlock="getusermsgs"-$
+
+
+$-Block local_column_list ( TableName, ColumnName, ListDelimiter ) -$
+   l$-TableName-$.$-ColumnName-$ $-ListDelimiter-$
+$-End Block-$
+
+
+$-Block local_keylist ( TableName, ColumnName, ListDelimiter ) -$
+   $-tablename-$.$-ColumnName-$ = l$-tablename-$.$-ColumnName-$ $-ListDelimiter-$
+$-End Block-$
+
+$-Block StdINPUTInterruptClause ( tablename ) -$
+  ON KEY ( INTERRUPT )
+    INITIALIZE l$-tablename-$.* TO NULL
+    ERROR "User cancelled operation"
+    SLEEP 2
+    EXIT INPUT
+$-End Block-$
+
+
+$-Block infield_case ( TableName, ColumnName ) -$
+
+    WHEN infield( $-ColumnName-$ )
+      CALL Pick$-ColumnName-$() RETURNING l2$-tablename-$.*
+
+      IF NOT int_flag THEN
+	LET l$-tablename-$.$-ColumnName-$ = l2$-tablename-$.$-ColumnName-$
+	DISPLAY BY NAME l$-tablename-$.$-ColumnName-$
+	NEXT FIELD $-ColumnName-$
+      END IF
+
+$-End Block-$
+
+
+$-( Describe a function which deletes a row based on user input )-$
+
+
+$-Block DeleteFunction ( tablename, column1=1, FuncName="Delete" )-$
+
+  FUNCTION $-FuncName-$$-tablename-$()
+    DEFINE
+      l$-tablename-$ RECORD LIKE $-tablename-$.*
+
+    LET l$-tablename-$.$-column1-$ = NULL
+
+    INPUT BY NAME 
+$-Paste local_column_list for each ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+
+    ON KEY (CONTROL-F)
+
+      CASE   # infield( $-tablename-$.* )
+$-Paste infield_case for each ( TableName, ColumnName ) In tbl_fld_names ( tablename ) -$
+      END CASE  # infield( $-tablename-$.* )
+
+$-Paste StdINPUTInterruptClause for each () in ONCEONLY () -$
+
+    AFTER INPUT
+       IF NOT int_flag THEN
+	  DELETE FROM $-tablename-$
+	  WHERE 
+$-Paste local_kelist ( TableName, ColumnName, ListDelimiter) In keylist ( tablename ) -$
+	  ERROR "Row deleted."
+	  SLEEP 2
+       END IF
+    END INPUT
+
+$-( include some standardized program code here inline )-$
+
+$- UserMessageBlock -$
+
+    CLEAR FORM
+
+    RETURN
+
+  END FUNCTION   # $-FuncName-$$-tablename-$()
+
+$-End Block-$
+
+
+$-( All the real output is the result of this one statement )-$
+
+
+$-Paste local_column_list ( TableName, ColumnName, ListDelimiter ) In fieldnames () -$
+

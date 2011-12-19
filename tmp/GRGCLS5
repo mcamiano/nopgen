@@ -1,0 +1,1 @@
+c_$-ReturnType-$ (*$-MethodName-$)($-Paste MethodArgs ( ArgClassType, ArgName, Delimiter ) in MethodArguments ( $-ClassName-$, $-MethodName-$ )-$) = gm_$-ClassName-$_$-MethodName-$;	/* Method Member */

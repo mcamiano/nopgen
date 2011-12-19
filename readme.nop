@@ -1,0 +1,88 @@
+
+                                  NOPGEN
+
+
+                      Copyright 1992 by Mitch C. Amiano.
+
+                            All Rights Reserved.
+
+    No claim is made as to the appropriateness of this software to any task. 
+
+                            Use at your own risk.
+
+                    No warranty is expressed or implied.
+
+                              Have a nice day.
+
+
+   Prerequisites
+   -------------
+
+      The following programs or utilities are used by this implementation
+   of NOpGen, and having some version of them is required to use NOpGen.
+   As of the time of this writing, NOpGen was implemented using the 
+   following utilities:
+
+      A Bourne or Korn compatible shell
+      echo  test  awk  sed  cat  more  egrep  rm
+
+      Most of the above utilites used by the original implementation were
+   (and are) ports to OS/2 of the GNU utilities, made by Kai Uw Rommel,
+   to whom I give many thanks.  This distribution will probably require
+   some modifications to use on other versions of the tools, mostly
+   because of my stretching their limits.  The most heavily relied on 
+   tools are sh and gawk,  while OS/2's 'more' utility is used but little.
+   Version statements of the tools follow:
+
+      SH Version 1.6.4 - May 12 1992 (OS/2 2.00)
+      Copyright (c) Data Logic Ltd and Charles Forsyth 1990
+      Ported to OS/2 by Kai Uwe Rommel 1990, 1992
+
+      Awk (gawk) 2.13, patchlevel 2
+
+      GNU sed version 1.08
+
+      GNU cat, version 2.1
+
+      GNU egrep, version 1.5
+
+      GNU rm, version 2.1
+
+   Forward
+   -------
+
+      It may not be clear to the reader that NOpGen is not simply a tool
+   you jump into without some preparation.  Let me restate that.  NOpGen
+   is for people who have well thought out source code generation needs,
+   not for those who wish to piddle with a screen painter.  Not that 
+   piddling with screen painters is illegitimate work, or unproductive, 
+   be NOpGen is unlike such tools.
+
+      Instead, NOpGen could very well be useful to you if you own a CASE
+   tool that does such screen painting, and stores the information in a 
+   queryable format, but provides only limited support for code generation,
+   or none at all.  NOpGen may also be useful if the CASE tool is not 
+   well integrated with your other information repositories, such as 
+   RDBMS databases or third party source code libraries. 
+
+      NOpGen is also useful if you don't even have a CASE tool.  The concept
+   was originally developed from ideas the author had while developing
+   RDBMS applications.  If you have access to an RDBMS or even a flat file
+   data managing utility, such as an XBASE language product, NOpGen could
+   be useful.
+
+      Rather than duplicate the manual page for NOpGen, I will refer you to
+   the various sources of information available in this package, and where
+   or how to find it:
+
+     ./Docs/
+	depend.doc         a pre-NOpGen discussion of formative ideas
+	nopgen.man         the manual pages for NOpGen
+	nopgen.ovrw        quick overview pages, as used for a presentation
+	nopgen.reason      also used in a presentation
+	Titles             also used in a presentation
+
+     ./nop -u              shows a usage message
+     ./nop -m              shows the manual pages ./Docs/nopgen.man
+
+     ./readme.nop          This readme file

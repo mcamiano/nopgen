@@ -1,0 +1,39 @@
+			Standard Service Specification 
+
+Class Name: Variable
+
+Service Name: SetName
+
+Summary: Access and modify the value of the Name attribute, 
+   responding with an operational verification.
+
+
+Preconditions...
+
+   Request Parameters:
+      TEXT   namevalue: 
+         1 <= namevalue.LENGTH < UNDEFINED
+
+
+   Object State:
+      Name
+
+
+   Other: none
+
+
+Transforms:
+
+   Name = namevalue
+
+Postconditions...
+
+   Response Feedback: 
+      STATUS
+
+   Object State:
+      Name:
+         Name == namevalue
+
+   Other: none
+

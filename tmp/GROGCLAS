@@ -1,0 +1,7 @@
+$-Paste GrogClassMethodDefinition ( ClassName, MethodName, ReturnType ) in ClassMethod ( $-ClassName-$ )-$$-%-$
+typedef struct {
+$-Paste GrogClassDataMember ( ColumnName, DataType ) In DataMembers ( $-ClassName-$ ) -$$-%-$
+$-Paste GrogClassInstanceMember ( ColumnName, InstanceClassName, UpperBound ) In InstanceMembers ( $-ClassName-$ ) -$$-%-$
+$-Paste GrogClassWholePartMember ( ColumnName, PartClassName, UpperBound ) In WholePartMembers ( $-ClassName-$ ) -$$-%-$
+$-Paste GrogClassMethodMember ( ClassName, MethodName, ReturnType ) In MethodMembers ( $-ClassName-$ ) -$$-%-$
+} c_$-ClassName-$;

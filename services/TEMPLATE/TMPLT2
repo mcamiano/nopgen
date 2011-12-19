@@ -1,0 +1,20 @@
+			Standard Object Specification 
+
+Class Name: TemplateComponent
+
+Summary: Abstract class. Used along with a whole-part structure 
+   to declare the responsibility of a template to contain
+   an ordered collection of abstract parts.
+
+Constraints:
+
+   Object State Attributes: none
+
+
+   Instance Connections: none
+
+
+   Whole-Part Structures:
+      Template WHOLE parenttemplate: 
+         parenttemplate.ISSET() == TRUE
+
