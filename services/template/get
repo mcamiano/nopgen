@@ -1,0 +1,40 @@
+			Standard Service Specification 
+
+Class Name: Template
+
+Service Name: Get
+
+Summary: Access and respond with the textual information contained
+   within the collective parts.
+
+Preconditions...
+
+   Request Parameters: none
+
+   Object State:
+      componentparts
+
+   Other: none
+
+Transforms:
+
+   RESPOND (
+  
+      FOR EACH item IN componentparts
+ 
+         REQUEST item.Get()
+
+      END FOR EACH
+   )
+
+
+Postconditions...
+
+   Response Feedback:
+      TEXT responsetext:
+         responsetext.LENGTH == UNDEFINED
+
+   Object State:
+
+   Other:
+
