@@ -1,4 +1,4 @@
-$-( Implementation Notes: )-$
+$-( Implementation Notes: )-$ 
 $-(   1. For data intensive applications, it is recommended that you create a  )-$
 $-(      set of tools with which to access the data dictionary, and use them )-$
 $-(      for making couplings. )-$
@@ -18,12 +18,13 @@ $- Coupling MasterTableColumns="dbcolumn $TABLE" -$ $-(         # Set TABLE to m
 
 $- Coupling MasterTableName="$TABLE"            -$ $-(         # Set TABLE to master table name )-$
 
-$- Coupling MasterTableKey="dbkey $TABLE"       -$ $-(         # Set TABLE to master table name )-$
+$- Coupling MasterTableKey="dbkeys $TABLE"       -$ $-(         # Set TABLE to master table name )-$
 
 $- Coupling DetailTableColumns="dbcolumn $DETTABLE"  -$ $-(    # Set DETTABLE to detail table name )-$
 
-$- Coupling DetailTablekey="dbkey $DETTABLE"         -$ $-(    # Set DETTABLE to detail table name )-$
+$- Coupling DetailTablekey="dbkeys $DETTABLE"         -$ $-(    # Set DETTABLE to detail table name )-$
 
 $- Coupling CurrentDirList="$DIRCMD ."               -$ $-(    # Set DIRCMD to file list command )-$
 
 $- Coupling MenuOptions='echo \"Locate\" \"Add\" \"Update\" \"Remove\" \"Quit\"' -$
+

@@ -1,5 +1,5 @@
-#!sh
-# nopgen.sh: dependancy factoring system
+#!d:/bin/sh.exe
+# nop: dependancy factoring system
 #
 # Copyright 1992 by Mitch C. Amiano.  All Rights Reserved.
 #
@@ -7,8 +7,6 @@
 # Use at your own risk. No warranty is expressed or implied.
 #
 # Utilities used: sh, sed, awk
-#
-# Sugar Free nopgen.sh: No Temp Files; Never had 'em, never will.
 #
 # Version 1.0
 #
@@ -54,19 +52,17 @@ if [ -z "$NOPGENTMP" ]
 then
    NOPGENTMP="$NOPGENHOME/tmp"
 fi
-echo "$0: Removing temporary files in $NOPGENTMP." >&2
-$RMPROG -f $NOPGENTMP/* | $GREPPROG -v "Rommel|[Rr]emoved|^ *$" >&2
 
 NOPGENSCRIPT="$NOPGENHOME/nopgen.awk"
 MANPAGE="$NOPGENHOME/nopgen.man"
 
 if [ -z "$DEMARCSTART" ] 
 then
-   DEMARCSTART='\$-'
+   DEMARCSTART='$-'
 fi
 if [ -z "$DEMARCEND" ] 
 then
-   DEMARCEND='-\$'
+   DEMARCEND='-$'
 fi
 
 if [ -z "$JUNCBOXES" ] 
@@ -90,10 +86,10 @@ $0: generate code given a text pattern file and a coupling definition file.
 
     Copyright 1992 by Mitch C. Amiano.  All Rights Reserved.
 
-Usage: nopgen.sh patternfile(s)
+Usage: $0 patternfile(s)
 where: patternfile holds a special text pattern to use for code generation
 
-   or: nopgen.sh [-u|-m]
+   or: $0 [-u|-m]
 where  -u brings up this usage message, and -m brings up the online man pages.
 EOT
 
@@ -133,6 +129,9 @@ if [ FatalError -eq 1 ]
    exit 1
 fi
 
+echo "$0: Removing temporary files in $NOPGENTMP." >&2
+$RMPROG -f $NOPGENTMP/* | $GREPPROG -v "Rommel|[Rr]emoved|^ *$" >&2
+
 #
 # Edit-out a list of coupling names from the junction box.
 #
@@ -141,3 +140,4 @@ fi
 $AWKPROG -f $NOPGENSCRIPT        \
    $JUNCBOXES                    \
    $PROTOFILES
+

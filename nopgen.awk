@@ -1,4 +1,9 @@
-# Awk program to generate code.
+# NOpGen.Awk program to generate code.
+# Copyright 1992 by Mitch C. Amiano
+# All Rights Reserved.
+# No claim is made as to the appropriateness of this software to any task.
+# Use at your own risk. 
+# No warranty is expressed or implied.
 #
 # Note: Since Awk scripts are interpreted, not compiled, the input interface
 #       is determined by the runtime invocation. So the interface this program
@@ -13,10 +18,44 @@
 #
 # Legend of Regular Expresions:
 #
-# [cC][oO][uU][pP][lL][i]I[nN][gG]   the word "coupling"
+# [cC][oO][uU][pP][lL][iI][nN][gG]   the word "coupling"
 # [ \t]*                             zero or more whitespace characters
 # [a-zA-Z0-9_]+                      a legal identifier (at least one char)
 # .*                                 any (or no) characters
+#
+# History: 
+#   Pre-September, 1992	Developed ideas of information-repository/data-dictionary/
+#			info-server based source code manipulation.  Wrote paper
+#			describing ideas of defining software in terms of the 
+#			inter- and infra- system dependancies.  Researched and
+#			disqualified several approaches, including cpp macros, m4
+#			macros, sed editing scripts, Makefiles, and shell based
+#			code generators for Informix-4GL.
+#   September, 1992	Prototyped as dbgenr.sh, then dbcodegen.awk.
+#			Developed idea for seperate pattern text and specializing text.
+#			Block-orientation is evident even in this prototype, but
+#			PARAGRAPHs (blocks) do not have parameters or names, and
+#			cannot be reused by independant PASTE statements.  Also,
+#			couplings are not independant reusable entities.
+#   October 6, 1992	Changed names several times, re-prototyped as Bourne-shell 
+# 			only script.  Increased use of temp directory and distinct files for
+#   October 18, 1992	block storage.  Discarded idea of shell-only script. Two-tiered
+#			program - 1 shell integration script, and 1 awk workhorse pgm.
+#			Seperated coupling definitions into 'junction' file, while retaining
+#			ability to define within pattern files.  NOpGen editing language
+#			is essentially codified, with the specification roughed out in the
+#			document "nopgen.man".  "depend.doc" is written to codify
+#			ideas regarding the abstract aspects.
+#			Name is finalized as NOpGen (Northside Operations Generator).
+#   December 12, 1992	Various infrequent debugging to this point. Major mistakes
+#			marked off with the word Defect in a comment.  Major milestone
+#			reached, in that NOpGen accepted all sample input and produced 
+#			BLOCK temporary files without a single fatal error. Unfortunately,
+#			still doesn't give FULLTEXT block output correctly.
+#   December 19, 1992	Changing DEMARC handling to eliminate incorrect 
+#			handling of RE's by HandleText().
+#   December 20, 1992	Further Reg Exp defects being fixed.
+#   				
 
 # Action 1: Initialize program before input.
 
@@ -28,44 +67,37 @@
 
 BEGIN { IFS = "\n"
 
-# Environmental variables 
+# Set up Environmental globals 
 
-   DEMARCSTART_RE=ENVIRON[ "DEMARCSTART" ]
-   DEMARCEND_RE=ENVIRON[ "DEMARCEND" ]
-print "." DEMARCSTART_RE "..." DEMARCEND_RE "."
-
-   STARTDM_LENGTH=length( DEMARCSTART_RE )
-   ENDDM_LENGTH=length( DEMARCEND_RE )
-
-   TEMP_DIRECTORY=ENVIRON[ "NOPGENTMP" ]
+   GetEnvVars()
 
 # RegExp patterns used to successively tear apart text into Nopgen statements.
 
    WHITESPACE_RE="[ \t]*"
    PARSE_RE="^.*" DEMARCSTART_RE "|" DEMARCEND_RE ".*" DEMARCSTART_RE "|" DEMARCEND_RE ".*$"
    PRETEXT_RE="^.+" DEMARCSTART_RE
-   NOTPRETEXT_RE=DEMARCSTART_RE
+   NOTPRETEXT_RE=DEMARCSTART_RE "|$"
    #STATEMENT_RE=PRETEXT_RE ".*" DEMARCEND_RE ".*$"
    COMMAND_RE=DEMARCSTART_RE ".*" DEMARCEND_RE
 
 # RegExp patterns used to parse Nopgen statements themselves.
 
-   BLOCK_RE=WHITESPACE_RE "[Bb][Ll][Oo][Cc][Kk]" WHITESPACE_RE
-   ENDBLOCK_RE=WHITESPACE_RE "[Ee][Nn][Dd][ \t*[Bb][Ll][Oo][Cc][Kk]" WHITESPACE_RE
-   EVALUATE_RE=WHITESPACE_RE "[Ee][Vv][Aa][Ll][Uu][Aa][Tt][Ee]" WHITESPACE_RE
-   SIMPLECOUP_RE=WHITESPACE_RE "[a-zA-Z0-9_]+" WHITESPACE_RE 
-   PASTE_RE=WHITESPACE_RE "[Pp][Aa][Ss][Tt][Ee]" WHITESPACE_RE
-   COUPLING_RE=WHITESPACE_RE "*[cC][oO][uU][pP][lL][i]I[nN][gG]" WHITESPACE_RE
-   COMMENT_RE="^\(.*\)$"
+   BLOCK_RE= "^[ \t]*[Bb][Ll][Oo][Cc][Kk][ \t]+"
+   ENDBLOCK_RE= "^[ \t]*[Ee][Nn][Dd][ \t]*[Bb][Ll][Oo][Cc][Kk][ \t]*" WHITESPACE_RE
+   EVALUATE_RE="^[ \t]*[Ee][Vv][Aa][Ll][Uu][Aa][Tt][Ee][ \t]+" 
+   SIMPLECOUP_RE= "^[ \t]*[a-zA-Z0-9_]+[ \t]*$"  
+   PASTE_RE= "^[ \t]*[Pp][Aa][Ss][Tt][Ee][ \t]+" 
+   COUPLING_RE= "^[ \t]*[cC][oO][uU][pP][lL][iI][nN][gG][ \t]+" 
+   COMMENT_RE="^[(].*[)]$"
 
-   BLOCKNAME_RE=WHITESPACE_RE "[a-zA-Z0-9_]+" WHITESPACE_RE 
-   PARAMLIST_RE=WHITESPACE_RE "\((" WHITESPACE_RE "[^ \t]+" WHITESPACE_RE ")*\)" WHITESPACE_RE
-   PARAMS_RE="(" WHITESPACE_RE "[^ \t]*" WHITESPACE_RE ")+"
-   PARAMS_SEPER_RE=WHITESPACE_RE "," WHITESPACE_RE
-   PARAMS_DFLT_RE=WHITESPACE_RE "=" WHITESPACE_RE "\"[^ \t]+\"" WHITESPACE_RE
-   UNLESSNULL_RE=WHITESPACE_RE "[Uu][Nn][Ll][Ee][Ss][Ss]" WHITESPACE_RE "[Nn][Uu][Ll][Ll]" WHITESPACE_RE
+   BLOCKNAME_RE="[ \t]*[a-zA-Z0-9_]+" 
+   PARAMLIST_RE="[ \t]*[(]([ \t]*[^ \t)]+[ \t]*)*[)][ \t]*"
+   PARAMS_RE="([ \t]*[^ ()\t]+[ \t]*)*"
+   PARAMS_SEPER_RE="[ \t]*,[ \t]*"
+   PARAMS_DFLT_RE="[ \t]*=[ \t]*\"[^ \t]+\"[ \t]*"
+   UNLESSNULL_RE="[ \t]*[Uu][Nn][Ll][Ee][Ss][Ss][ \t]*[Nn][Uu][Ll][Ll][ \t]*"
 
-   COUPRESULTS_SEPER_RE=WHITESPACE
+   COUPRESULTS_SEPER_RE="[ \t]*"
 
 # Nopgen program state constants.
 
@@ -101,6 +133,7 @@ NopgenState == NOPGEN_READING {
 # Action 3: Process for output
 
 END {
+Debug( "END: Preparing to process output" )
 
    if ( NopgenState == NOPGEN_FATAL ) {   # Fatal error detected earlier.
       exit 
@@ -197,7 +230,7 @@ Debug( "NOTPretextPos:" PretextPos )
 	 Pretext=substr( TextLine, 1, PretextLength )
 Debug( "PreText:"  Pretext )
 
-	 sub( Pretext, "", TextLine )                  # Leading text cut out
+	 TextLine = substr( TextLine, PretextPos )
 
 	 HandleText( Pretext, "no" )                  # Stored w/out newline
 
@@ -207,7 +240,7 @@ Debug( "PreText:"  Pretext )
 # It could also have more trailing text and statements intermixed.
 
 # Parse and cut out the command.  Then case it.
-#leftoff
+
       CommandPos=match( TextLine, DEMARCSTART_RE ) 
 
 Debug( "CommandPos:"  CommandPos )
@@ -218,21 +251,18 @@ Debug( "CommandPos:"  CommandPos )
                                   # Length here includes demarcations.
 
          CommandLength=CommandPos + match( TextLine, DEMARCEND_RE )
-            + ENDDM_LENGTH - 1
+            + ENDDM_LENGTH
 
 Debug( "CommandLength:"  CommandLength )
 
                                   # Get the actual command text
-                                  # leftoff. It's truncating both ends by 1.
 
-         Command=substr( TextLine, CommandPos + STARTDM_LENGTH - 1, 
-            CommandLength - STARTDM_LENGTH - ENDDM_LENGTH + 1)
+         Command=substr( TextLine, CommandPos + STARTDM_LENGTH, 
+            CommandLength - (STARTDM_LENGTH + ENDDM_LENGTH))
 
 Debug( "Command:"  Command )
 
             # Cut the command out of line, with demarcation strings.
-#leftoff. sub() not working: input text is fouling it up as if it were an RE.
-#    Try using f() to cut out by size instead of RE pattern.
 
          TextLine = substr( TextLine, CommandLength+1 ) 
 
@@ -307,6 +337,7 @@ Debug( "Case: Comment" )
    }
 
 # BLOCK statements.               Apply to any state.
+# Defect: End Block phrase not matched.
 
    if ( stmnt ~ BLOCK_RE ) {
 Debug( "Case: Begin Block" )
@@ -324,35 +355,73 @@ Debug( "Case: End Block" )
 
 # Action: EVALUATE statements.            Do only in output state.
 
-   if ( stmnt ~  EVALUATE_RE && NopgenState == NOPGEN_WRITING )  {
+   if ( stmnt ~  EVALUATE_RE )  {
+
+      if ( NopgenState == NOPGEN_WRITING )  {
 Debug( "Case: Evaluate" )
-      EvalEvaluate( stmnt )
-      return
+	 EvalEvaluate( stmnt )
+	 return
+      }
+      else {   # Replace it in its pristine form.
+	 HandleText( DEMARCSTART_STRING, "no" )      # Stored w/out newline
+	 HandleText( stmnt, "no" )                  # Stored w/out newline
+	 HandleText( DEMARCEND_STRING, "no" )      # Stored w/out newline
+	 return
+      }
    }
 
 # PASTE statement.                 Only in output state.
 
-   if ( stmnt ~ PASTE_RE && NopgenState == NOPGEN_WRITING )  {
+   if ( stmnt ~ PASTE_RE )  {
+
+      if ( NopgenState == NOPGEN_WRITING )  {
 Debug( "Case: Paste" )
-      PasteBlock( stmnt )
-      return
+	 PasteBlock( stmnt )
+	 return
+      }
+      else {   # Replace it in its pristine form.
+	 HandleText( DEMARCSTART_STRING, "no" )         # Stored w/out newline
+	 HandleText( stmnt, "no" )                    # Stored w/out newline
+	 HandleText( DEMARCEND_STRING, "no" )       # Stored w/out newline
+	 return
+      }
    }
 
 # COUPLING definition statements.   Only in output state.
 
-   if ( stmnt ~ COUPLING_RE && NopgenState == NOPGEN_WRITING )  {
+   if ( stmnt ~ COUPLING_RE )  {
+
+      if ( NopgenState == NOPGEN_WRITING )  {
    
 Debug( "Case: Coupling Definition" )
-      EvalCoupDef( stmnt )
-      return
+	 EvalCoupDef( stmnt )
+	 return
+      }
+      else {   # Replace it in its pristine form.
+	 HandleText( DEMARCSTART_STRING, "no" )         # Stored w/out newline
+	 HandleText( stmnt, "no" )                     # Stored w/out newline
+	 HandleText( DEMARCEND_STRING, "no" )         # Stored w/out newline
+	 return
+      }
    }
 
-# Final case matches a simple coupling to be evaluated inline. Output state.
+# Final case matches a simple coupling to be evaluated inline.
+# Output state only.
 
-   if ( stmnt ~ SIMPLECOUP_RE && NopgenState == NOPGEN_WRITING )  {
+   if ( stmnt ~ SIMPLECOUP_RE )  {
+
+      if ( NopgenState == NOPGEN_WRITING )  {
+   
 Debug( "Case: Simple Coupling" )
-      EvalSimpleCoup( stmnt )
-      return
+	 EvalSimpleCoup( stmnt )
+	 return
+      }
+      else {       # replace it in its pristine form
+	 HandleText( DEMARCSTART_STRING, "no" )      # Stored w/out newline
+	 HandleText( stmnt, "no" )                  # Stored w/out newline
+	 HandleText( DEMARCEND_STRING, "no" )      # Stored w/out newline
+	 return
+      }
    }
 
 Debug( "Case: Default (nothing matched)" )
@@ -393,8 +462,8 @@ Debug( "EvalEvaluate(" )
    stmnt=CutRE( COUPLING_RE, stmnt)
 
 # Copy and store coupling parameters in Params
-   stmnt=CutRE( "^[ \t]*\(",  stmnt )
-   stmnt=CutRE( "\)[ \t]*$",  stmnt )
+   stmnt=CutRE( "^[ \t]*[(]",  stmnt )
+   stmnt=CutRE( "[)][ \t]*$",  stmnt )
    TempParamNum = split( stmnt, Params, PARAMS_SEPER_RE )
 
 # Loop through each coupling parameter and create line of parameters' values
@@ -472,10 +541,12 @@ Debug( "StartStoringBlock(" )
 # Cut out the BLOCK keyword.
 
       BlockCmd = CutRE( BLOCK_RE, BlockCmd )
+Debug(  BlockCmd )
 
 # Parse out the block name into Blkname. The validate it.
 
       Blkname = CopyRE( BLOCKNAME_RE, BlockCmd )
+Debug(  Blkname )
 
       if ( length( Blkname ) == 0 ) {
          FatalError( "StartStoringBlock(): no block name given." )
@@ -495,8 +566,10 @@ Debug( "StartStoringBlock(" )
 # The values for the parameters are the actual values of the array.
 
       BlockCmd = CopyRE( PARAMLIST_RE, BlockCmd )
-      BlockCmd=CutRE( "^[ \t]*\(",  BlockCmd )
-      BlockCmd=CutRE( "\)[ \t]*$",  BlockCmd )
+
+#Defect: syntax err in RE due to literal parenthesis
+
+      BlockCmd=CopyRE( PARAMS_RE,  BlockCmd )
 
       TempParamNum = split( BlockCmd, TempParamBuf, PARAMS_SEPER_RE )
       NumBlockParams[ CurrentBlock ] = TempParamNum
@@ -639,8 +712,8 @@ Debug( "PasteBlock(" )
 # The index for BlockParameter is mangled from Blkname+"parametername"
 
    FieldSpecLine = CopyRE( PARAMLIST_RE, PasteCmd )
-   FieldSpecLine = CutRE( "^[ \t]*\(",  PasteCmd )
-   FieldSpecLine = CutRE( "\)[ \t]*$",  PasteCmd )
+   FieldSpecLine = CutRE( "^[ \t]*[(]",  PasteCmd )
+   FieldSpecLine = CutRE( "[)][ \t]*$",  PasteCmd )
 
 # If the number of fields is zero, the paste is done without any reference
 #    to the actual values returned by the coupling.  This allows a straight
@@ -654,7 +727,7 @@ Debug( "PasteBlock(" )
 #    specifiers in the command line will be ignored.
 
 # Cut out field specifiers from paste command line.
-
+#leftoff
    PasteCmd = CutRE( FieldSpecLine, PasteCmd )
 
 # The field specifiers are now prepared and contained in FieldSpecs[],
@@ -677,8 +750,8 @@ Debug( "PasteBlock(" )
 # or from default BLOCK parameters.
 
       CoupParamsLine = CopyRE( PARAMLIST_RE, PasteCmd )
-      CoupParamsLine = CutRE( "^[ \t]*\(", CoupParamsLine )
-      CoupParamsLine = CutRE( "\)[ \t]*$", CoupParamsLine )
+      CoupParamsLine = CutRE( "^[ \t]*[(]", CoupParamsLine )
+      CoupParamsLine = CutRE( "[)][ \t]*$", CoupParamsLine )
       PasteCmd = CutRE( CoupParamsLine, PasteCmd )
 
       NumCoupParams = split( CoupParamsLine, CoupParams, PARAMS_SEPER_RE )
@@ -800,7 +873,7 @@ Debug( "EvalCoupDef(" )
 # Address the following actions to coupling definitions only.
 #  The form of the definition is:   coupling coupname = "stuff"
 
-   if ( TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][i]I[nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*".*"[ \t]*$/ || TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][i]I[nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*'.*'[ \t]*$/  )
+   if ( TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][iI][nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*".*"[ \t]*$/ || TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][iI][nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*'.*'[ \t]*$/  )
    {
    
 #  Cut out the word "coupling" from the start to make it easier to parse.
@@ -861,15 +934,48 @@ function FatalError( ErrMessage )   {
 #   len   (local)
 #   buf   (local)
 
-function CutRE( RegExp, String,      pos, len, buf )   {
+function CutRE( RegExp, String,      StrLen, REpos, RElen, PartLen, buf )   {
 Debug( "CutRE(" )
 
-   pos=match( RegExp, String )
-   len=RLENGTH
-   buf=substr( String, len, pos )
-   sub( buf, "", String)
+   if ( length( RegExp ) == 0 ) {
+      FatalError( "CutRE(): Null regular expression argument.")
+   }
 
-   return String
+Debug( RegExp )
+
+   StrLen=length( String )
+
+   REPos=match( String, RegExp )     # Get position of RE to cut.
+
+Debug( REPos )
+
+   if ( REPos > 0 ) {               # Continue if found.
+
+      RELen=RLENGTH                     # Get length of matched string
+
+Debug( RELen )
+
+      if ( REPos > 1 ) {    # There is a first partial string.
+
+         PartLen=REPos - 1        # Calculate first part length.
+         buf=substr( String, 1, PartLen)  # Snip it from front.
+      } 
+
+
+      if ( (REPos + RELen) <= StrLen ) {   # There is a last part.
+
+         PartLen=StrLen - (REPos + RELen - 1)    # Calculate position of last part.
+         buf=buf substr( String, (REPos + RELen), PartLen)  # Snip it from end. Note concatenation of buf.
+      } 
+
+   }
+   else {
+      buf=String
+   }
+
+Debug( "String =" buf )
+
+   return buf
 
 }   # End function
 
@@ -885,9 +991,9 @@ Debug( "CutRE(" )
 function CopyRE( RegExp, String,      pos, len, buf )   {
 Debug( "CopyRE(" )
 
-   pos=match( RegExp, String )
+   pos=match( String, RegExp )
    len=RLENGTH
-   buf=substr( String, len, pos )
+   buf=substr( String, pos, len )
 
    return buf
 
@@ -899,15 +1005,18 @@ Debug( "CopyRE(" )
 #   BlockName   (local parameter)
 #   Result         (local)
 #   Cmmd         (local)
+#   ValidCount   (local)
 
-function ValidBlock( BlockName,      Result, Cmmd )   {
+function ValidBlock( BlockName,      Result, Cmmd, ValidCount )   {
 Debug( "ValidBlock(" )
 
-   Cmmd = "ls " TEMP_DIRECTORY "/" BlockName " | wc -l"
+   Cmmd = "ls -l " TEMP_DIRECTORY "/" BlockName 
 
-   Cmmd | getline Result
+   while ( Cmmd | getline Result ) {
+      ValidCount++
+   }
 
-   return Result
+   return ValidCount
 
 }   # End function
 
@@ -921,3 +1030,52 @@ function Debug( ErrMessage )   {
    printf( "D: %s\r\n", ErrMessage ) | "cat 1>&2"
 
 }   # End function
+
+# GetEnvVars():  Import and assign enviromental variables to globals.
+#
+# Variables:
+#    DEMARCSTART_RE
+#    DEMARCSTART_STRING
+#    DEMARCEND_RE
+#    DEMARCEND_STRING
+#    STARTDM_LENGTH
+#    ENDDM_LENGTH
+#    TEMP_DIRECTORY
+
+function GetEnvVars(    StringPos )   {
+
+                           # Get the starting demarcator
+
+   DEMARCSTART_STRING=ENVIRON[ "DEMARCSTART" ]
+   STARTDM_LENGTH=length( DEMARCSTART_STRING )
+   if ( STARTDM_LENGTH == 0 ) {
+      FatalError( "GetEnvVars(): No starting delimiter string specified." )
+   }
+   for ( StringPos = 1;  StringPos <= STARTDM_LENGTH; ++StringPos ) {
+      DEMARCSTART_RE=DEMARCSTART_RE "[" substr(DEMARCSTART_STRING, StringPos, 1) "]"
+   }
+
+                           # Get the ending demarcator
+
+   DEMARCEND_STRING=ENVIRON[ "DEMARCEND" ]
+   ENDDM_LENGTH=length( DEMARCEND_STRING )
+   if ( ENDDM_LENGTH == 0 ) {
+      FatalError( "GetEnvVars(): No ending delimiter string specified." )
+   }
+   for ( StringPos = 1;  StringPos <= ENDDM_LENGTH; ++StringPos ) {
+      DEMARCEND_RE=DEMARCEND_RE "[" substr(DEMARCEND_STRING, StringPos, 1) "]"
+   }
+
+Debug(  "." DEMARCSTART_RE "..." DEMARCEND_RE "." )
+
+			   # Get the temporary work directory
+
+   TEMP_DIRECTORY=ENVIRON[ "NOPGENTMP" ]
+
+}   # End function
+# leftoff
+#GAWK.EXE: fatal error: Unmatched \(: / ( TableName, ColumnName, ListDelimiter )
+#In fieldnames (/
+#  input line number 89, file `patternfile'
+#  source line number 949, file `e:/nopgen/nopgen.awk'
+#

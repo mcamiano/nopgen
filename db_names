@@ -1,4 +1,5 @@
-# fieldnames="db_names "
+#!d:/bin/sh.exe
+#  fieldnames="db_names "
 echo "Customer_id"
 echo "Customer_name"
 echo "Address_1"

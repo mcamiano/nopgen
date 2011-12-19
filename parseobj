@@ -1,0 +1,2 @@
+#!d:/bin/sh.exe
+egrep OBJ: $1 | cut -d " " -f 5

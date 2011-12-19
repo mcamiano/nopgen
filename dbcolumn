@@ -1,4 +1,4 @@
-c:bin/cat <<EOT
+d:/bin/cat <<EOT
 cust_id
 cust_name
 phone
