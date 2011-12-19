@@ -1,7 +1,7 @@
 TITL 
-OBJ: 0 340 200 Block
-DESC 122
-+Summary: A software template.
+OBJ: 0 25 660 BlockParameter
+DESC 103
++Summary:
 +
 +States:
 +
@@ -15,8 +15,92 @@ DESC 122
 +
 +References:
 
-OBJ: 0 140 200 Coupling
-DESC 206
+ATTR ContextPosition
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR DefaultValue
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR Name
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 100 435 BlockParameterList
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 935 605 Developer
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 630 605 ExecutableModule
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 745 400 ExternalAgent
+DESC 208
 +Summary: A device for joining two things or parts together.
 +
 +States:
@@ -31,9 +115,37 @@ DESC 206
 +
 +References:
 
-OBJ: 0 600 210 Customer
-DESC 153
-+Summary: A person who purchases and owns software artifacts.
+ATTR Name
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+SERV +++<EvaluateBlockParameter>+++
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 85 200 GenericTextBlock
+DESC 124
++Summary: A software template.
 +
 +States:
 +
@@ -47,11 +159,25 @@ DESC 153
 +
 +References:
 
-OBJ: 0 10 325 Dependency
-DESC 268
-+Summary: An requirement that, with respect to a specified concept, instantiations
-+   of that concept be altered if and when the defining instance of the concept 
-+   changes.
+SERV +++<Specialize>+++
+DESC 95
++Summary:
++
++Parameters:
++
++Algorithm:
++
++Exceptions:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 795 605 HardwareDevice
+DESC 103
++Summary:
 +
 +States:
 +
@@ -65,23 +191,7 @@ DESC 268
 +
 +References:
 
-OBJ: 0 465 210 Developer
-DESC 146
-+Summary: A person who creates and modifies artifacts.
-+
-+States:
-+
-+External Inputs:
-+
-+External Outputs:
-+
-+Constraints:
-+
-+Notes:
-+
-+References:
-
-OBJ: 0 310 325 ExternalArtifact
+OBJ: 0 555 445 InformationConduit
 DESC 101
 +Summary:
 +
@@ -97,73 +207,8 @@ DESC 101
 +
 +References:
 
-OBJ: 0 250 200 Fitting
-DESC 216
-+Summary: A fixture or piece of apparatus.
-+
-+States:
-+
-+External Inputs:
-+
-+External Outputs:
-+
-+Constraints:
-+
-+Notes: Bib: Britannica World Language edition of Funk & Wagnalls Standard
-+   Dictionary
-+
-+References:
-
-OBJ: 0 150 445 FittingParameter
-DESC 101
-+Summary:
-+
-+States:
-+
-+External Inputs:
-+
-+External Outputs:
-+
-+Constraints:
-+
-+Notes:
-+
-+References:
-
-OBJ: 0 25 445 InlineFitting
-DESC 101
-+Summary:
-+
-+States:
-+
-+External Inputs:
-+
-+External Outputs:
-+
-+Constraints:
-+
-+Notes:
-+
-+References:
-
-OBJ: 1 545 20 Person
-DESC 116
-+Summary: A human being.
-+
-+States:
-+
-+External Inputs:
-+
-+External Outputs:
-+
-+Constraints:
-+
-+Notes:
-+
-+References:
-
-OBJ: 0 155 10 SoftwareArtifact
-DESC 241
+OBJ: 0 345 400 SpecificTextBlock
+DESC 243
 +Summary: Any object made or modified by humans, especially one reflecting
 +   workmanship.
 +
@@ -179,8 +224,36 @@ DESC 241
 +
 +References:
 
-CON2 w 10 3 "" ""
-DESC 49
+OBJ: 1 250 10 TextBlock
+DESC 103
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+ATTR TextualContent
+DESC 62
++Summary:
++
++Values:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 4 2 "" ""
+DESC 51
 +Summary:
 +
 +Constraints:
@@ -189,8 +262,8 @@ DESC 49
 +
 +References:
 
-CON2 g 10 1 "" ""
-DESC 49
+CON2 g 9 5 "" ""
+DESC 51
 +Summary:
 +
 +Constraints:
@@ -199,8 +272,8 @@ DESC 49
 +
 +References:
 
-CON2 g 10 6 "" ""
-DESC 49
+CON2 g 4 3 "" ""
+DESC 51
 +Summary:
 +
 +Constraints:
@@ -209,8 +282,8 @@ DESC 49
 +
 +References:
 
-CON2 g 10 0 "" ""
-DESC 49
+CON2 g 4 6 "" ""
+DESC 51
 +Summary:
 +
 +Constraints:
@@ -219,8 +292,8 @@ DESC 49
 +
 +References:
 
-CON2 g 9 4 "" ""
-DESC 49
+CON2 w 8 8 "" ""
+DESC 51
 +Summary:
 +
 +Constraints:
@@ -229,8 +302,8 @@ DESC 49
 +
 +References:
 
-CON2 g 9 2 "" ""
-DESC 49
+CON2 w 5 0 "" ""
+DESC 51
 +Summary:
 +
 +Constraints:
@@ -239,8 +312,49 @@ DESC 49
 +
 +References:
 
-CON2 m 3 5 "" ""
-DESC 49
+CON2 m 4 8 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 5 1 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 1 0 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON3 0 20 100
+CON2 g 5 8 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 9 8 "" ""
+DESC 51
 +Summary:
 +
 +Constraints:

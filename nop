@@ -54,7 +54,8 @@ if [ -z "$NOPGENTMP" ]
 then
    NOPGENTMP="$NOPGENHOME/tmp"
 fi
-$RMPROG -f $NOPGENTMP/* | $GREPPROG -v "Rommel|[Rr]emoved|^ *$"
+echo "$0: Removing temporary files in $NOPGENTMP." >&2
+$RMPROG -f $NOPGENTMP/* | $GREPPROG -v "Rommel|[Rr]emoved|^ *$" >&2
 
 NOPGENSCRIPT="$NOPGENHOME/nopgen.awk"
 MANPAGE="$NOPGENHOME/nopgen.man"
@@ -118,12 +119,12 @@ for file in $PROTOFILES
 do
    if [ ! -r "$file" ]
    then
-      echo "$0: $file is not readable."
+      echo "$0: $file is not readable." >&2
       FatalError=1
    fi
    if [ ! -f "$file" ]
    then
-      echo "$0: $file is not a regular file."
+      echo "$0: $file is not a regular file." >&2
       FatalError=1
    fi
 done

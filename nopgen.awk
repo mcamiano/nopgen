@@ -32,6 +32,7 @@ BEGIN { IFS = "\n"
 
    DEMARCSTART_RE=ENVIRON[ "DEMARCSTART" ]
    DEMARCEND_RE=ENVIRON[ "DEMARCEND" ]
+print "." DEMARCSTART_RE "..." DEMARCEND_RE "."
 
    STARTDM_LENGTH=length( DEMARCSTART_RE )
    ENDDM_LENGTH=length( DEMARCEND_RE )
@@ -42,8 +43,9 @@ BEGIN { IFS = "\n"
 
    WHITESPACE_RE="[ \t]*"
    PARSE_RE="^.*" DEMARCSTART_RE "|" DEMARCEND_RE ".*" DEMARCSTART_RE "|" DEMARCEND_RE ".*$"
-   PRETEXT_RE="^.*" DEMARCSTART_RE
-   STATEMENT_RE=PRETEXT_RE ".*" DEMARCEND_RE ".*$"
+   PRETEXT_RE="^.+" DEMARCSTART_RE
+   NOTPRETEXT_RE=DEMARCSTART_RE
+   #STATEMENT_RE=PRETEXT_RE ".*" DEMARCEND_RE ".*$"
    COMMAND_RE=DEMARCSTART_RE ".*" DEMARCEND_RE
 
 # RegExp patterns used to parse Nopgen statements themselves.
@@ -53,14 +55,14 @@ BEGIN { IFS = "\n"
    EVALUATE_RE=WHITESPACE_RE "[Ee][Vv][Aa][Ll][Uu][Aa][Tt][Ee]" WHITESPACE_RE
    SIMPLECOUP_RE=WHITESPACE_RE "[a-zA-Z0-9_]+" WHITESPACE_RE 
    PASTE_RE=WHITESPACE_RE "[Pp][Aa][Ss][Tt][Ee]" WHITESPACE_RE
-   COUPLING_RE=WHITESPACE_RE *[cC][oO][uU][pP][lL][i]I[nN][gG] WHITESPACE_RE
+   COUPLING_RE=WHITESPACE_RE "*[cC][oO][uU][pP][lL][i]I[nN][gG]" WHITESPACE_RE
    COMMENT_RE="^\(.*\)$"
 
    BLOCKNAME_RE=WHITESPACE_RE "[a-zA-Z0-9_]+" WHITESPACE_RE 
    PARAMLIST_RE=WHITESPACE_RE "\((" WHITESPACE_RE "[^ \t]+" WHITESPACE_RE ")*\)" WHITESPACE_RE
    PARAMS_RE="(" WHITESPACE_RE "[^ \t]*" WHITESPACE_RE ")+"
    PARAMS_SEPER_RE=WHITESPACE_RE "," WHITESPACE_RE
-   PARAMS_DFLT_RE=WHITESPACE_RE "=" WHITESPACE_RE \"[^ \t]+\"" WHITESPACE_RE
+   PARAMS_DFLT_RE=WHITESPACE_RE "=" WHITESPACE_RE "\"[^ \t]+\"" WHITESPACE_RE
    UNLESSNULL_RE=WHITESPACE_RE "[Uu][Nn][Ll][Ee][Ss][Ss]" WHITESPACE_RE "[Nn][Uu][Ll][Ll]" WHITESPACE_RE
 
    COUPRESULTS_SEPER_RE=WHITESPACE
@@ -118,12 +120,15 @@ END {
 # Variables:
 
 function ProcessOutput(      CommandLine )   {
+Debug( "ProcessOutput(" )
 
    CommandLine = sprintf( "cat %s/fulltext", TEMP_DIRECTORY  )
 
 # Loop through lines in "fulltext", evaluating the output.
 
-   while ( CommandLine  | getline LastPassText ) {
+   close( TEMPFILE )
+
+   while ( CommandLine | getline LastPassText ) {
       ProcessLines( LastPassText )
    }
 
@@ -139,10 +144,11 @@ function ProcessOutput(      CommandLine )   {
 #   STATEMENT_RE   (global constant)
 
 function ProcessLines( Stuff )   {
+Debug( "ProcessLines(" )
 
 # Check line for pattern characteristic of a nopgen statement.
 
-   if ( match( Stuff, STATEMENT_RE ) == 0 ) {   # No match
+   if ( match( Stuff, COMMAND_RE ) == 0 ) {   # No match
 
       HandleText( Stuff, "yes" ) 
 
@@ -176,16 +182,20 @@ function ParseTextLine( TextLine,
    PretextPos, PretextLength, Pretext,
    CommandPos, CommandLength, Command ) {
 
+Debug( "ParseTextLine(" )
    while( length( TextLine ) > 0 )  {              # Continue until used up
+Debug( "TextLine:" TextLine )
 
 # Cut and paste any leading non-statement text.
 
-      PretextPos=match( TextLine, PRETEXT_RE )
+      PretextPos=match( TextLine, NOTPRETEXT_RE )
+Debug( "NOTPretextPos:" PretextPos )
 
-      if ( PretextPos != 0 ) {                         # Leading text found
+      if ( PretextPos > 1 ) {                         # Leading text found
 
-	 PretextLength=RLENGTH - STARTDM_LENGTH         # Leading text copied
-	 Pretext=substr( TextLine, PretextPos, PretextLength )
+	 PretextLength=PretextPos-1
+	 Pretext=substr( TextLine, 1, PretextLength )
+Debug( "PreText:"  Pretext )
 
 	 sub( Pretext, "", TextLine )                  # Leading text cut out
 
@@ -197,17 +207,36 @@ function ParseTextLine( TextLine,
 # It could also have more trailing text and statements intermixed.
 
 # Parse and cut out the command.  Then case it.
+#leftoff
+      CommandPos=match( TextLine, DEMARCSTART_RE ) 
 
-      CommandPos=match( TextLine, COMMAND_RE ) 
+Debug( "CommandPos:"  CommandPos )
 
-      if ( CommandPos != 0 ) {    # Command found in remainder
+      if ( CommandPos >= 1 ) {    # Command found in remainder
                                   # Cut out the command, removing demarcations.
 
-         CommandLength=RLENGTH - ( STARTDM_LENGTH + ENDDM_LENGTH )
+                                  # Length here includes demarcations.
 
-         Command=substr( TextLine, CommandPos+STARTDM_LENGTH, CommandLength )
+         CommandLength=CommandPos + match( TextLine, DEMARCEND_RE )
+            + ENDDM_LENGTH - 1
 
-         sub( Command, "", TextLine )            # Cut the command out of line.
+Debug( "CommandLength:"  CommandLength )
+
+                                  # Get the actual command text
+                                  # leftoff. It's truncating both ends by 1.
+
+         Command=substr( TextLine, CommandPos + STARTDM_LENGTH - 1, 
+            CommandLength - STARTDM_LENGTH - ENDDM_LENGTH + 1)
+
+Debug( "Command:"  Command )
+
+            # Cut the command out of line, with demarcation strings.
+#leftoff. sub() not working: input text is fouling it up as if it were an RE.
+#    Try using f() to cut out by size instead of RE pattern.
+
+         TextLine = substr( TextLine, CommandLength+1 ) 
+
+Debug( "TextLine:"  TextLine )
 
          CaseCommand( Command )      # Dispatch the proper functions.
 
@@ -226,24 +255,28 @@ function ParseTextLine( TextLine,
 #   Increment   (local parameter)
 
 function HandleText( TextLine, Increment ) {
+Debug( "HandleText(" TextLine )
 
 
 # Throw the text into the temp file.
    
    if ( NopgenState == NOPGEN_READING ) {
+
       if ( Increment != "no" ) {
 	 printf( "%s\n", TextLine ) >> TEMPFILE
       }
-      else
+      else {
 	 printf( "%s", TextLine ) >> TEMPFILE
       }
+
    }
    else {
+
       if ( NopgenState == NOPGEN_WRITING ) {
 	 if ( Increment != "no" ) {
 	    printf( "%s\n", TextLine ) 
 	 }
-	 else
+	 else {
 	    printf( "%s", TextLine )
 	 }
       }
@@ -260,12 +293,14 @@ function HandleText( TextLine, Increment ) {
 #   
 
 function CaseCommand( stmnt ) {
+Debug( "CaseCommand(" )
 
 # Action: Comments (anything within demarcations and immediate parenthesis).
 # Note that a comment must not have any characters between the parens and
 # the demarcation strings.
 
    if ( stmnt ~ COMMENT_RE ) {                     # Do action in any state.
+Debug( "Case: Comment" )
       # Do nothing at all for comments.
       # This way, the comment is effectively 'cut' from the output.
       return
@@ -274,6 +309,7 @@ function CaseCommand( stmnt ) {
 # BLOCK statements.               Apply to any state.
 
    if ( stmnt ~ BLOCK_RE ) {
+Debug( "Case: Begin Block" )
       StartStoringBlock( stmnt )
       return
    }
@@ -281,22 +317,23 @@ function CaseCommand( stmnt ) {
 # END BLOCK statements.           Apply to any state.
 
    if ( stmnt  ~ ENDBLOCK_RE ) {
+Debug( "Case: End Block" )
       EndStoringBlock( stmnt )
       return
    }
 
 # Action: EVALUATE statements.            Do only in output state.
 
-   if ( stmnt ~  EVALUATE_RE 
-     && NopgenState == NOPGEN_WRITING )  {
+   if ( stmnt ~  EVALUATE_RE && NopgenState == NOPGEN_WRITING )  {
+Debug( "Case: Evaluate" )
       EvalEvaluate( stmnt )
       return
    }
 
 # PASTE statement.                 Only in output state.
 
-   if ( stmnt ~ PASTE_RE
-     && NopgenState == NOPGEN_WRITING )  {
+   if ( stmnt ~ PASTE_RE && NopgenState == NOPGEN_WRITING )  {
+Debug( "Case: Paste" )
       PasteBlock( stmnt )
       return
    }
@@ -305,16 +342,20 @@ function CaseCommand( stmnt ) {
 
    if ( stmnt ~ COUPLING_RE && NopgenState == NOPGEN_WRITING )  {
    
+Debug( "Case: Coupling Definition" )
       EvalCoupDef( stmnt )
+      return
    }
 
 # Final case matches a simple coupling to be evaluated inline. Output state.
 
    if ( stmnt ~ SIMPLECOUP_RE && NopgenState == NOPGEN_WRITING )  {
+Debug( "Case: Simple Coupling" )
       EvalSimpleCoup( stmnt )
       return
    }
 
+Debug( "Case: Default (nothing matched)" )
    return
 
 }   # End function
@@ -331,11 +372,11 @@ function CaseCommand( stmnt ) {
 #   CommandLine   (local)
 #   TextLine   (local)
 
-function EvalEvaluate( stmnt,
-   coup, TextFile, Params, EvalId, CommandLine, TextLine, CoupPos, 
-   CoupLen, CoupStr, EvalPos, EvalLen, EvalStr 
-   TempParamNum, TempBufIdx, TempName, ParamLine ) { 
+function EvalEvaluate( stmnt, coup, TextFile, Params, EvalId, CommandLine,
+TextLine, CoupPos,  CoupLen, CoupStr, EvalPos, EvalLen, EvalStr,
+TempParamNum, TempBufIdx, TempName, ParamLine ) { 
 
+Debug( "EvalEvaluate(" )
 # Increment EvalId to identify current EVALUATE statement and temp file.
 
    EvalId += 1
@@ -395,7 +436,7 @@ function EvalEvaluate( stmnt,
 
    CommandLine = sprintf( "cat %s", TextFile )
 
-   for ( CommandLine | getline TextLine ) {
+   while ( CommandLine | getline TextLine ) {
       ProcessOutput( TextLine )
    }
 
@@ -416,8 +457,8 @@ function EvalEvaluate( stmnt,
 #   TempDfltVal      (local)
 #   TempBufIdx       (local)
 
-function StartStoringBlock( BlockCmd,      
-   Blkname, TempParamBuf, TempParamNum, TempDfltVal, TempBufIdx ) {
+function StartStoringBlock( BlockCmd,       Blkname, TempParamBuf, TempParamNum, TempDfltVal, TempBufIdx ) {
+Debug( "StartStoringBlock(" )
 
 # Validate the program state.
 
@@ -510,6 +551,7 @@ function StartStoringBlock( BlockCmd,
 #   TEMPFILE   (global variable)
 
 function OpenTempFile( Dir, FileName ) { 
+Debug( "OpenTempFile(" )
 
 # Create temp file name from temp dir and block name.
 
@@ -530,6 +572,7 @@ function OpenTempFile( Dir, FileName ) {
 #   TEMP_DIRECTORY    (global constant)
 
 function EndStoringBlock( BlockCmd ) {
+Debug( "EndStoringBlock(" )
 
 # Validate program state.
 
@@ -560,17 +603,8 @@ function EndStoringBlock( BlockCmd ) {
 #   CoupParams[]   (local)
 #   BlockParameter[]   (global buffer)
 
-function PasteBlock( PasteCmd,
-   Blkname,
-   BlockParamIdx,
-   Coup,
-   CoupParams, CoupParamLine, NumCoupParams, CoupParamsIdx,
-   FieldSpecLine, FieldSpecs, NumFieldSpecs, FieldSpecsIdx,
-   CommandLine,
-   CommandLine2,
-   BlockText,
-   UnlessNull,
-   ResultFields, NumResultFields  ) {
+function PasteBlock( PasteCmd, Blkname, BlockParamIdx, Coup, CoupParams, CoupParamLine, NumCoupParams, CoupParamsIdx, FieldSpecLine, FieldSpecs, NumFieldSpecs, FieldSpecsIdx, CommandLine, CommandLine2, BlockText, UnlessNull, ResultFields, NumResultFields  ) {
+Debug( "PasteBlock(" )
 
 # Validate the statement while parsing it.
 
@@ -688,7 +722,7 @@ function PasteBlock( PasteCmd,
 # Assign field values to BlockParams to be used when substituting.
 # Initialize unassigned BlockParameter[] values to defaults (BlockDefaults[])
 
-	    for ( CoupParamsIdx = 1; CoupParamsIdx <= NumBlockParams[ Blkname ]; ++CoupParams ( {
+	    for ( CoupParamsIdx = 1; CoupParamsIdx <= NumBlockParams[ Blkname ]; ++CoupParams ) {
 
 	       if ( CoupParamsIdx <= NumResultFields ) {
 		  BlockParamIdx = Blkname CoupParams[ CoupParamsIdx ]
@@ -713,13 +747,9 @@ function PasteBlock( PasteCmd,
 
 # Loop through each block parameter, and global substitute on the new line
 
-	       for ( CoupParamsIdx = 1; 
-	          CoupParamsIdx <= NumBlockParams[ Blkname ];
-	           ++CoupParams ) {
-
+	       for ( CoupParamsIdx = 1;  CoupParamsIdx <= NumBlockParams[ Blkname ]; ++CoupParams ) {
 		  BlockParamIdx = Blkname CoupParams[ CoupParamsIdx ]
-		  gsub( CoupParams[ CoupParamsIdx ], 
-		     BlockParameter[ BlockParamIdx ], BlockText )
+		  gsub( CoupParams[ CoupParamsIdx ], BlockParameter[ BlockParamIdx ], BlockText )
 	       }
 
 # Last leg: send the line out.
@@ -745,6 +775,7 @@ function PasteBlock( PasteCmd,
 #   InputText   (local)
 
 function EvalSimpleCoup( coup,      InputText ) {
+Debug( "EvalSimpleCoup(" )
 
    while ( Coupling[ coup ] | getline InputText ) {
       HandleText( InputText, "yes" )
@@ -764,13 +795,12 @@ function EvalSimpleCoup( coup,      InputText ) {
 #   Coupling   (global buffer array)
 
 function EvalCoupDef( TextLine,      TempSplit, CoupName, CoupDefStart ) {
+Debug( "EvalCoupDef(" )
 
 # Address the following actions to coupling definitions only.
 #  The form of the definition is:   coupling coupname = "stuff"
 
-   if ( TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][i]I[nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*".*"[ \t]*$/
-      ||
-      TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][i]I[nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*'.*'[ \t]*$/  )
+   if ( TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][i]I[nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*".*"[ \t]*$/ || TextLine ~ /^[ \t]*[cC][oO][uU][pP][lL][i]I[nN][gG][ \t]*[a-zA-Z0-9_]+[ \t]*=[ \t]*'.*'[ \t]*$/  )
    {
    
 #  Cut out the word "coupling" from the start to make it easier to parse.
@@ -832,6 +862,7 @@ function FatalError( ErrMessage )   {
 #   buf   (local)
 
 function CutRE( RegExp, String,      pos, len, buf )   {
+Debug( "CutRE(" )
 
    pos=match( RegExp, String )
    len=RLENGTH
@@ -852,6 +883,7 @@ function CutRE( RegExp, String,      pos, len, buf )   {
 #   buf   (local)
 
 function CopyRE( RegExp, String,      pos, len, buf )   {
+Debug( "CopyRE(" )
 
    pos=match( RegExp, String )
    len=RLENGTH
@@ -869,6 +901,7 @@ function CopyRE( RegExp, String,      pos, len, buf )   {
 #   Cmmd         (local)
 
 function ValidBlock( BlockName,      Result, Cmmd )   {
+Debug( "ValidBlock(" )
 
    Cmmd = "ls " TEMP_DIRECTORY "/" BlockName " | wc -l"
 
@@ -878,3 +911,13 @@ function ValidBlock( BlockName,      Result, Cmmd )   {
 
 }   # End function
 
+# Debug():  Print out an error message and continue processing.
+#
+# Variables:
+#   ErrMessage   (local parameter)
+
+function Debug( ErrMessage )   {
+
+   printf( "D: %s\r\n", ErrMessage ) | "cat 1>&2"
+
+}   # End function
