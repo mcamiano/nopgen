@@ -1,0 +1,409 @@
+
+                                  NOPGEN
+
+
+                      Copyright 1992 by Mitch C. Amiano.
+
+                            All Rights Reserved.
+
+    No claim is made as to the appropriateness of this software to any task. 
+
+                            Use at your own risk.
+
+                    No warranty is expressed or implied.
+
+
+                                 Abstract
+
+   Dependancies exist throughout typical application software which make
+the code inflexible to external and internal changes.  For example, most 
+data intensive applications make use of some form of data dictionary to
+maintain data structure information.  Yet, in the software editing process 
+the implimenter may make only cursory manual use of the information. The 
+software text created has numerous points at which data structure
+'meta-data' is hard coded,  unfactored, and unidentified.  When (not if)
+the structure of the data changes, maintainance costs increase because 
+
+   Nopgen is source code manipulation device which allows dependancy
+factoring.  It is similar to a lexical analyzer and parser, with both
+user specified and predefined patterns and actions.  Output is generated
+by automating the typical editing process using a predefined template
+for intput.  A rough template representative of output text is factored
+so as to  remove dependancies.  The dependancies are documented in the
+template text as they are removed, and rules are defined and stored
+which are later used to recreate documents similar to the original.
+
+
+                           Text Generation Model
+
+The text generator works by editing a file containing source text, using 
+simple user defined patterns and actions.  A pattern and action are together
+known as a "coupling".  The coupling is used to represent a dependancy in the
+source text.  A file containing coupling definitions,  referred to as a 
+"junction box," is used to provide a single point of change for maintaining 
+these dependancies.  
+
+The source files, called pattern files, provide the baseline text from 
+which the output is generated.  Couplings are included in the pattern
+file at points referred to as "fittings."  A fitting is a change point
+in the pattern file text.  Is specifies, through Nopgen statements, 
+the effect that a dependancy has on the baseline text.
+
+Couplings represent lists, or sets, of items.  They are connected to a
+pattern file by inserting fittings.  The fitting associates a coupling with 
+unblocked text (a plain macro),  or with blocked text (via Nopgen statements).
+An unblocked text fitting is made by prefacing and suffixing a coupling name 
+with the demarcation patterns, or by inserting an EVALUATE statement.
+A fitting is made with a BLOCK defined pattern by using the PASTE statement.
+
+When a coupling is accessed, it is evaluated as if it were a readable file 
+containing multiple space-delineated fields, in multiple newline delineated
+rows.  A PASTE statement can edit a text pattern in a BLOCK by using the
+information supplied by a coupling.  The text read from a coupling can
+also be evaluated and reevaluated inline using the EVALUATE statement.
+This allows the coupling mechanism to be used for pattern file text
+inclusion.
+
+                   Description of the Code Generation Process
+
+To produce output, couplings are joined to the pattern file via fittings.
+A coupling is evaluated at code generation time, and results used to control
+editing of the pattern file template.
+
+There are three ways in which pattern file text can be processed 
+when a coupling is evaluated.
+
+The first is simple replacement of a fitting with the value of its coupling.
+In this case, text is processed line by line and passed through with one line 
+of output (usually) per line of input.  This type of fitting is essentially
+a type of macro expansion.
+
+The second type of processing involves the BLOCK blocks. It
+is essentially an automated cut-and-paste process.  A BLOCK block 
+specifies a frame of text which is copied, cut, and pasted once 
+for each set of fields in the coupling output.  All other 
+fittings within the block are processed, as in the previous case.
+
+BLOCKs may be parameterized so that they become a form of templates.
+A block's parameters may be fitted into the text within the block itself. 
+They will be replaced with fields read from a coupling, which is evaluated
+when a PASTE statement is executed.
+
+By default, no text is output for a block until it is PASTEd into the 
+highest level block, the "fulltext" block.  The "fulltext" block represents
+the last pass of text generation, after all baseline text has been read in.
+
+                          Code Generation Details
+
+Demarcation of fittings from pattern text.
+
+ The default demarcation pattern is "$-" .  This can be changed with the 
+ environmental variables "DEMARCSTART" and "DEMARCEND".  The patterns are 
+ set as regular expressions.  See the man pages for grep, ed, awk, or sed for
+ use of regular expressions.  Use of constants is recommended, since 
+ matches via complex regular expressions are not easily debugged 
+ by visual analysis; they can lead to unexpected behavior.
+
+Defining couplings.
+
+ Couplings are defined within pattern files using the COUPLING statement.
+ A default coupling definition file is provided, named "junction.box".  
+ Each line in the junction box defines a coupling which will be used 
+ in editing the pattern file for output.
+
+ The junction box entries are Nopgen coupling definition statements.
+ The Nopgen keyword COUPLING precedes the definition.  Like a COUPLING
+ statement in a pattern file, it needs to be prefaced and suffixed 
+ with demarcation patterns.  The value assigned to the coupling represents 
+ an executable command line.
+
+ As an example, the following defines a coupling named "tables" which
+ returns all table names in an SQL database:
+
+ $-coupling tables="isql - mydb <<EOTselect tabname from systablesEOT"-$
+
+ Since coupling definitions are actually command lines, the programs 
+ called can be parameterized by the use of environmental variables.  This
+ example makes use of the environmental variable "mytable", presumably set
+ to a table name before calling Nopgen :
+ (note that newlines should NOT be present in the actual statement)
+
+  $-coupling columns="isql - mydb <<EOTselect colname from syscolumns,
+  systables where systables.tabname = \"$mytable\" and systables.tabid
+  = syscolumns.tabid"-$
+
+ A definition for a coupling may not contain embeded newlines. The 
+ definition may exceed the visible line length, so long as it remains one
+ single uninterrupted line.
+
+
+Nopgen statements.
+
+ The Nopgen statements follow. Couplings are denoted by the word 
+ 'coupling_name'. Fully optional arguments are shown in square brackets.
+ When at least one choice must be made from a list of options, braces are
+ made.  Elipses are used to represent an open-ended list of options.
+ Parenthesis and quotes are literals and should be used as shown.
+
+
+ BLOCK block_name ([ param1{="val"} {, param2{="val2"},... paramN={"valN"} } ])
+ END BLOCK block_name
+                  
+ A block of text is delineated from other pattern file text by the use of
+ the demarcation patterns and the Nopgen statement BLOCK.  By default,
+ there is always at least one implicit text block defined, identified by
+ the block id of "fulltext". 
+
+ The BLOCK defines editable units of text.  The block parameter
+ names may appear within the block, in which case the parameters are
+ replaced with text provided by a coupling, or by defaults.   Parameters
+ which do not appear in the text are ignored.  The parameters may also 
+ appear in text inserted into a BLOCK body with an EVALUATE statement.
+ Parameters may be defined default values, which take precedence if 
+ the BLOCK is PASTEd with insufficient (or null) parameter values.
+
+ The block does not appear in the output unless it is instantiated with
+ a coupling in a PASTE statement.
+
+ Block definitions are processed before any other directives in the 
+ pattern file.  All statements (except more BLOCK statements) may be used 
+ inside a block definition.  None of the statements inside the block are 
+ processed until the "fulltext" block is processed for output.
+ 
+
+ EVALUATE coupling ([ param-1, param-2,... param-N ])
+
+ The EVALUATE statement lets text from a coupling be directly 
+ included in the output, or to be inserted into the body of a BLOCK.  
+ The coupling may optionally be passed parameters.  The parameters should
+ have been defined in a containing BLOCK statement.  If the parameters 
+ are not defined by an 'ancestor' BLOCK, they are assigned the null string.
+
+ Text which is included with an EVALUATE statement is recursively
+ reevaluated until all Nopgen statements are exhausted.  When used within
+ a BLOCK of text, only successive EVALUATE statements are re-evaluated in
+ this way.  Final evaluation of other statements and couplings is left
+ to the final output of the "fulltext" block.
+
+ PASTE block_name FOR EACH ([ field-1, field-2,... field-N ])
+ IN coupling ([ coup-param-1, coup-param-2,... coup-param-N ]) [ UNLESS NULL ]
+
+ PASTE statements will copy-and-paste the named BLOCK of text for each 
+ space-seperated field in the text of the evaluated coupling.  Parameters 
+ may optionally be passed to the coupling.  The structure of coupling 
+ text may be specified using optional positional field parameters.  The names
+ of the field parameters should coincide with parameter names of the 
+ named block.  
+
+ It should also be noted that the interface between the text block and 
+ the system couple are flexible. The BLOCK parameter list is NOT positional.
+ Instead, its parameters are associative; they are accessed by name only.
+ Any structure of text can come from an evaluated coupling, but couplings
+ used in PASTE statements generally deliver field-oriented strings. Some 
+ reconciliation has been provided for in the PASTE statement field list.
+
+ If a coupling within a given PASTE statement evaluates to an odd number
+ of fields in relation to the number of fields in the field list, the PASTE
+ statement, on its last iteration, will set all unassigned fields to the 
+ null string. (It is not an error.  What will eventually happen is that
+ any default parameter values in the BLOCK definition will supercede.)
+
+ If the UNLESS NULL clause is included, the last iteration of the previous
+ case will be prevented.  Also, when a coupling evaluates to nothing, the 
+ PASTE operation will not occur at all.
+
+ coupling_name
+
+ This can be seen clearer if we use demarcation strings ($- and -$):
+
+ $-coupling_name-$
+
+ This is known as a discrete coupling fitting.  As a final stage in 
+ pattern file processing, all such discrete couplings are evaluated,
+ their place in the text being replaced with the text from the coupling.
+ 
+ Since couplings are used throughout the pattern file text, they are 
+ considered to have a global namespace.  They may not share names with
+ BLOCKs or BLOCK parameters.
+
+ 
+ (comments)  
+
+ This can also be seen clearer with demarcation:
+
+ $-( This is a comment )-$
+
+ A pair of matching parenthesis containing any string, prefixed and suffixed
+ with the demarcation patterns provides for a Nopgen comment.  The 
+ comment will be ignored.
+
+                        Example Pattern File
+
+A sample pattern file follows. Three couplings named "table", "column", 
+and "keylist" have been defined, the demarcation patterns are set to 
+"$-" and "-$" respectively, and the code has been factored into three explicit
+text blocks.
+
+
+$-BLOCK keylist (key)-$             a list of discrete column variable 
+
+    l$-table-$.$-key-$
+
+$-END BLOCK keylist-$
+
+
+$-BLOCK afterfield (field)-$          The default AFTER FIELD clause
+
+  AFTER FIELD $-field-$
+    IF l$-table-$.$-field-$ IS NULL THEN
+      ERROR $-field-$, " is empty. "
+    END IF  # l$-table-$.$-field-$ IS NULL
+
+$-END BLOCK afterfield-$
+
+
+$-BLOCK infield (field)-$              A default infield clause
+
+    WHEN infield( $-field-$ )
+      CALL Pick$-field-$() RETURNING l2$-table-$.*
+      IF NOT int_flag THEN
+        LET l$-table-$.$-field-$ = l2$-table-$.$-field-$
+        DISPLAY BY NAME l$-table-$.$-field-$
+        NEXT FIELD $-field-$
+      END IF
+
+$-END BLOCK infield-$
+
+
+FUNCTION fEdit$-table-$( l$-table-$ )
+  DEFINE
+    l$-table-$ RECORD LIKE $-table-$.*
+ 
+  INPUT BY NAME 
+    $-PASTE keylist(key) FOR EACH keyfield()-$
+
+  WITHOUT DEFAULTS
+
+     $-PASTE afterfield(field, junkfield) FOR EACH keyfield()-$
+
+     $-(junkfield is ignored by the afterfield block)-$
+
+  ON KEY (CONTROL-F)
+
+    CASE   # infield( $-table-$.* )
+
+       $-PASTE infield(field) FOR EACH column()-$
+
+    END CASE  # infield( $-table-$.* )
+
+  END INPUT
+
+  RETURN ( l$-table-$.* )
+
+END FUNCTION   # fSave$-table-$()
+
+                          Miscellaneous Notes
+Heirarchical Editing.
+
+ A pattern file is normally the only source of pattern text for Nopgen.
+ However, couplings may be used along with Nopgen statements to create a
+ heirarchical framework.  The EVALUATE statement is especially helpful
+ in this respect.
+
+ Since the BLOCK body is recursively rescanned for Nopgen statements, 
+ a set of source management utilities can be written to provide library
+ management and text inclusion.  Care must be taken to prevent infinite 
+ recursion, since it could overflow the Nopgen stack.  
+
+Delineation of coupling fields.
+
+ The default coupling-field delineation pattern is a space; changing it
+ is not currently supported.
+
+Evaluation of couplings.
+
+ It is assumed that a coupling will give back meaningful pipe input. In
+ particular, if a fitting is generally made in unblocked portions of 
+ pattern text, the corresponding coupling will usually evaluate to only 
+ one contiguous (undelineated) field.  If the fitting is usually made 
+ in PARAGRAPH blocks, it will usually evaluate to multiple (space delineated)
+ fields.
+
+ No checking is performed to ensure that a coupling actually gives any
+ readable text.  The default action in this case is to do nothing
+ for unblocked text (print the original text alone without the fittings),
+ and to assign defaults to block parameters (null strings if no defaults).
+ A PASTE operation can be prevented when the coupling returns nothing by
+ using the UNLESS NULL clause.
+
+ If a coupling is associated with a parameterized block, it is assumed that
+ the coupling will evaluate to a regular multiple of the number of block
+ parameters.  If it evaluates to a multiple with a remainder, the remaining
+ parameters will be assigned the null string on the last iteration of the 
+ PASTE statement. 
+
+			    Release Notes
+
+ Changing the field delineating string is not supported by the prototype.
+ It will be supported in a future release.
+
+ Nopgen is generally case sensitive, but certain operating systems are not;
+ this may cause porting problems when moving couplings across environments.
+
+ Don't use the same names for block names, couplings, and block parameters.
+ Nopgen doesn't support overloading of names, though it may work in some
+ cases. 
+
+ The "fulltext" block cannot be redefined or PASTEd.  It is for 
+ referential use only.
+
+ If there is extra (trailing) input returned from a coupling, it will be 
+ discarded rather than prepended to the next row.  This was a time-driven
+ implementation constraint :-(.
+ 
+Toward the Future
+
+    NOpGen needs a front-end.  Such an interface should provide some mechanism
+ of full function text editing.  It should also provide a hypertext type of 
+ access to the system (inter- or infra-) dependancies.  The front-end should
+ NOT be a character-based application; graphic-based client-server technologies
+ are the preferred form of implimentation.  Decomposition of the front-end 
+ services will not dictated at this point, but they should be tightly coupled
+ and capable of communicating information among themselves.  The front-end
+ when considered as a system in itself, should be maintainable as a NOpGen
+ dependancy.
+
+    The front-end services for NOpGen should facilitate the construction of 
+ software systems.  The worker should be allowed to access concurrent views
+ of any and all dependancies.  A single application system should itself 
+ be considerable as a kind of dependancy, and this view should be promoted.
+
+    NOpGen also needs a back-end, to serve as a repository for its objects.
+ In NOpGen's case, the objects are usually considered as some form of the
+ system inter- or infra- dependancies mentioned above.  The front-end
+ will make use of the repository services to provide multiple concurrent
+ views of a system, with features including context sensitivity, simple
+ keyword indexing, complex permuted indexing, and hypertext style browsing.
+ ( For the uninformed, a permuted index is one which has more than
+ one ordered column of identifying keywords. )
+
+    During a typical session with the front-end, a system maintenance worker
+ will typically look for patterns which depend on some other portion of the 
+ system.  These patterns may be factored, distributed, or possibly even 
+ eliminated.  These are all mental activities which code maintainers 
+ currently engage in.  The important aspect to note here is that, once 
+ identified, a dependancy can be generalized and made explicit.  It can
+ be stored and retrieved with the repository, reviewed with the front 
+ end, and finally, embeded and/or evaluated in the system with the NOpGen core
+ dependancy evaluation service.  The whole of the NOpGen services should 
+ encourage the worker to recognize prototypical information patterns within
+ and at the boundaries of an application.
+
+    Dependancies may be parameterized, depending on the nature of the 
+ inter-object coupling.  Whether the dependancy is only evaluated once 
+ per application or many times, it is important that as much information
+ concerning its usage be presented to the worker during maintenance.  It 
+ is not enough to give a name;  there should be ample access to the 
+ parameter-interface descriptions, and parameter defaults, and intended usage.
+ The worker must be allowed to access as much information as they want, no 
+ more and no less, so that they may make quick and informed decisions.

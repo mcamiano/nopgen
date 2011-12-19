@@ -1,0 +1,438 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                         Dependancy Modelling
+
+               Minimal Coverage and Controlled Mutability
+
+                            August 29, 1992
+
+                              M. C. Amiano
+
+Abstract
+
+   Software is, by definition, soft.  All software systems are essentially
+dynamic systems.  Over short life cycle intervals, the state of a given 
+system may appear static, but this view is short sighted and ignores 
+preceding and successive systems which considered together make up
+stages of a longer lived system.  These systems contain interdependencies
+and infradependencies, and may be described in terms of these dependencies.
+Artificial life systems are designed to modify themselves based on
+self-indicated dependencies; even the method of modification may be 
+altered.  Dependancies can model the mutability of software systems like 
+these as well as their less dynamic counterparts.
+
+
+Definition of Software
+
+   What is software ?  A simple decomposition of the word yields two initial
+aspects - that it is 'soft', and that it is 'ware'.  The word 'soft' is 
+synonymous with 'yielding', 'mushy', 'pasty', 'squashy', 'doughy', and 
+'plastic'.  On the contrary, most software systems we build is quite hard
+to modify, rigid in its implementation, and breaks at the slightest 
+alteration.  The word 'ware' implies that software is a commodity, or a kind
+of usable good or merchandise, analogous to kitchen ware and hardware.  Too
+often software has the plasticity characteristics of glassware.  Good
+software should be malleable, ductile, and capable of sustaining large 
+but definable mutations in its life time.
+
+   It should be obvious that software has a semantic content as well as a
+syntactic content.  Unfortunately, it is not so obvious, and we quickly
+confuse the two in our dealings with the stuff.  When most of us talk 
+about software or software systems, the concept which comes most readily to
+mind is that of language.  More specifically, we tend to think of a 
+language which we are cognizant of.  
+
+Mutability of Software
+
+   Now, in spite of the research indications that natural language syntax is 
+related to semantic content, the distinction still holds true by and large.
+We express higher-level semantic concepts, not already embodied in the language,
+with complex syntactic constructs.  Later, as the concept is manipulated and 
+internalized by users, they may abstract it and name it, removing the
+syntactic complexity.  
+
+   Software workers have learned some of the flexibility and dynamism that 
+comes of recognizing abstraction and 'hiding'.  They have made use of 
+formalisms that express the functional and data oriented counterparts. 
+Such techniques as partitioning, packaging, data type and service abstraction
+make use of these concepts.  The problem is that they do not do a 
+comprehensive job of semantic and syntactic abstraction.  
+
+   Computer language designers do not model the the dynamism of natural 
+languages.  They fail to take into account the way in which it abstracts
+and specifies itself.  Usually, a fixed level of semantic manipulation is 
+allowed for data and functions, but only rarely is any syntactic mutability
+allowed.  In some languages, notably C++ and C, a single level of syntactic
+decoupling is provided in the form of 'references' and 'pointers', which
+are used as aliases for some other function or data construct.  Even in these
+cases, no explicit support is given for manipulating syntactic constructs nor 
+semantic content.  Nor do they provide sufficient mechanisms for providing
+controlled safeguarding of such manipulations.
+
+   It has been said that a software application implementation becomes a 
+language in itself.  While this is readily apparent, steps are usually
+taken to discourage workers from pursuing this line of thinking.  Too
+much abstraction is though of by many as being too 'unique' to a particular
+application, and therefore non-portable, difficult to understand readily,
+and slow.  While some or all of these objections may be true in specific 
+cases, it is more often true that the benefits and penalties were never 
+realistically compared, and possibly not even understood.  Increased 
+factoring of an application into prototypical abstractions is the essence 
+of software reuse.  Increased use of abstractions should lead to less actual
+software to maintain.
+
+   Paradoxically, many OOP programmers are finding this ideal hard to attain.
+Some OOP software systems allow a great deal of language manipulation.  Some
+allow all of the techniques available in the functional paradigm, while 
+providing mechanisms supporting object oriented manipulations.  Others
+provide purist OOP technology for software definition.  None of them allow
+the definition of the software application to itself state the syntactic
+changes necessary based on an internal or an external semantics.  The result
+is that, even at their best, application of OOPS for reuse only marginally
+outperformed similar function-based efforts.  
+
+Dynamism in Software
+
+   Neither function-based nor the object oriented technologies provide
+mechanisms by which a software system can update itself using the industry
+proven method with which it was built.  It is intuitive for programmers 
+to acknowledge dependencies, review code, assess change points based upon
+their knowlege of a dependency, and perform variations on the cut-and-paste
+theme we know so well.  In virtually all cases, the recognition of 
+dependencies is allowed to go on unassisted.  Where support is given for
+software mutability, it is usually provided through the use of dynamic
+tables (state tables, dispatch tables, message queues...) and/or static
+syntax overloading.  These techniques are useful, but they have faults.  
+Dynamic tables can eseverely impede performance, since they trade syntactic 
+abstraction in exchange for an enlarged program state space.  Static syntax 
+overloading, as evidenced by techniques such as templates, macros,
+and overloaded name spaces, are limited in their ability to specify what 
+does NOT belong in an overloaded definition, and cannot require or make use
+of internal or external semantic dependencies.
+
+   Software system implementations (applications) serve to define an
+instance-specific problem domain language.  Just as the technical jargon
+of the work place is in constant flux, so also is the virtual-language
+of a software system.  Just as sociological norms and organizational 
+policies place constraints upon the development of the workplace language,
+software systems need mutability constraints to keep them viable.  
+Software systems are in a very real sense living systems, being extensions 
+of ourselves, with their own life cycles (not the development life cycle) 
+and their own diseases.  Within limits, software systems should be allowed
+to adapt to new requirements; and that with a minimum of external attention.
+They should be adaptive instead of adaptable. (Which is one of the strengths
+of OO paradigms - they take a more proactive view of the system.)  I will 
+refer to such ideal software as an adaptive software machine (ASM).
+
+Primitives of Adaptive Software Machines
+
+Adaptive Constraints
+
+   One defining primitive of an ASM is an adaptive constraint (AC).
+An AC specifies the limits of mutability of an ASM over its life time,
+or, more specifically, of a dependency found within an ASM or at its 
+system boundary.  It is a mechanism to enforce specific requirements of 
+change control policies.  In other words, an adaptive constraint is a 
+method for specifying the engineering tolerances of the software.
+
+   An AC defines conditions under which a change related to a given
+dependency may take place, and conditions for which they may not.  It
+may specify those conditions in terms of some other external or internal
+dependencies, or even by functional reference to the controlled
+dependency itself.  For instance, a compile-time dependency may be
+coupled to an ASM to perform a set of code manipulations over a range of
+integers from -5 to N, unless N evaluates to 0.  In this case, the AC
+reveals that the integrity of the ASM can no longer be assumed, even if
+the compile procedure is abandoned.  The AC specifies that a dependency
+is of a critical nature in the production of an ASM, and must never be
+allowed to exceed certain constraints.
+
+Dependancies
+
+   Another ASM primitive is the dependency, a word used frequently in
+previous paragraphs.  Dependancies exist in all software systems, but
+are intended to be recognized explicitly in ASM's.   Some dependencies
+exist as prototypical patterns in software, equivalent to macros,
+templates, and so-called boiler-plates.  The critical concept is that
+some aspect of FORM can be generalized out of the application specific
+software.  As an example, many database applications contain portions of
+code which depend on a syntactic language construct and a set of column
+names, such as a typical CASE statement in a 4GL:
+
+   Case
+   When col1
+      function1()
+   When col2
+      function2()
+   ... 
+
+   When colN
+      functionN()
+   End Case
+
+   Several dependencies could be established; I will point out but one:
+the WHEN clause is duplicated once for each column, and contains a reference
+to a function who's name is mangled from the sequential column number.
+When factored, the prototypical construct may look something like this:
+ 
+   Case
+$-Paste for every ( COLUMN-NUMBER ) in schema_for_table( "tablename" )-$
+   When col$-COLUMN-NUMBER-$
+      function$-COLUMN-NUMBER-$()
+$-End Paste-$
+   End Case
+
+   Dependancies are an encompassing and elegant concept.  They can be used
+to describe every dimension of a software system, from performance
+characteristics to data structures.  Dependancies exist in all systems,
+from software to organic entities, whether they have been formalized or not.
+
+   OO technologies provide many conceptual tools by which to model and 
+implement some types of dependencies, but ignore the concept itself.
+One of the most dangerous difficulties with OOP systems is that they
+allow the construction of increasingly large systems (which is good),
+but do not formalize control of the forces which tend to change the
+software.  This could lead to an unmanageable dynamism in the executing
+system, and also provides a vast expanse of possible paths to debug when
+things go wrong.
+
+   Event analysis brings a powerful mechanism with which to model system
+dependencies.  Indeed, an event can itself be modelled as an ASM
+dependency.  To the extent that event analysis has modeled dependencies, 
+it has provided us with a valuable tool.  However, not all dependencies 
+are events.  Another type of dependency is the existance of entities
+and relationships, for which the Entity/Relationship approach was developed.
+Still another is the isomorphism evident between data and algorithms, pointed
+out by DeMarco [DeMarco,1982], who got the idea from Warnier [Warnier, 1976].
+
+   Yet another set of dependencies, even less widely recognized, are the 
+human factor requirements.  Only recently the topic of popular discussion,
+human factors affect software systems in ways our models just don't account for.  
+Being primarily sociological and physiological in nature, the changes they
+induce are difficult to predict or control.  A related issue is that of 
+the environment, whether it be a change in the business environment or 
+the computer environment.   Together, they form a class of dependencies which
+are wholly outside of the system boundary.   
+
+   As an example of a human factor related dependency, consider a menu in 
+a typical decision support system (DSS).  Incongruities can creep into the
+system almost immediately.  One menu is implemented as a line by line chart
+of selections, another is displayed as a single row of options across the 
+top of the screen, and still another requires you to press <CTRL><ALT>-X
+before presenting you with a pop up list of selections.  In a typical 
+data-gathering application, menus are usually required to be very similar 
+to one  another, but still different.  OOP techniques can help remove the 
+tedium of implementing these same-except-for constructs, but even with
+OOP the dependencies are still embedded within the code as character
+strings and function-call paths.  Nor with OOP is there a sufficient
+mechanism for providing automated dependency-based creation or
+destruction of the dependant entities.  With OOP, if you only want part
+of a thing, you must accept everything and hide the rest.
+
+   Formal dependencies and AC's can alleviate some of the difficulties
+of environmental fluctuations.  They can act as a de facto standards
+and policy enforcer by providing a path of least resistance toward
+getting the job done.  More importantly, the juncture of an AC and a 
+dependency provides a disciplined and formal engineering change control
+mechanism.  The two primitives together provide critical information about
+the system's tolerance for, and exposure to, a given change.  Using this
+information, it may be possible to:
+
+      obtain an executive veto of the request 
+	 (too trivial a change for too large an impact)
+
+      predict a cascading effect through other seemingly unrelated subsystems
+	 (inter-system dependencies)
+
+      specify that a given change would violate a subsystem's integrity
+         (requiring a reassessment, rewrite, and retesting of the subsystem)
+
+Couplings and Fittings
+
+   To understand the coupling primitive, you should think in terms of
+construction.  Like the concept of a pipe as used in a number of
+multitasking operating systems, a coupling is modeled after a piece of
+plumbing or mechanical hardware.  A mechanical coupling is a device which
+joins two structural members in a prescribed manner to allow the transfer
+of forces.  In the context of ASM's, a coupling provides a predefined 
+mechanism for reevaluating the effects of a dependency.  Couplings exist
+primarily outside of the scope of a system. To enable the modeling of 
+infra-system dependencies, couplings themselves may be defined in such 
+a way as to make them dependant on the system they are fitted to.
+
+   Couplings are a very mechanistic, and hence implementation dependant,
+ASM primitive.  Unlike the description of a dependency, a coupling has 
+a great deal of form, and only a symbolic meaning.  Its meaning is 
+derived from the dependency it represents.   In an early prototype of
+a coupling-based code generator, dependencies exist only as conceptual
+entities, while couplings are definable and usable much like the 
+objects in an OOP language.  Couplings are normally considered external 
+to the ASM scope in part because of this operational definition.
+
+   A fitting is analogous to a coupling, but it exists primarily within
+the scope of the ASM.  The concept of a fitting will be a bit difficult
+to describe, both because of its abstract quality and its operational
+nature.  Let me use an analogy, taken from mathematics.  A fitting is like 
+the number zero, in that it serves as a place holder without having a value
+in itself.  It is the space that is made within the system in order to set 
+a coupling in place.  A fitting exists wherever a coupling has been 
+connected to the system, because the connection was made.  In fact, it IS
+the connection.
+
+   Fittings serve two purposes.  First, they serve a practical purpose in
+acting as a place holder for a coupling.  Second, they can act like a kind
+of software universal joint, allowing multiple degrees of freedom in the
+connection.  The fitting accomplishes this second purpose by providing a 
+mapping from the dependency data to the dependant portion of the system.
+How it does this is implementation dependant.  In the early prototype, 
+fittings are made in the form of parameterized code generator statements.
+
+   Being within the ASM scope boundary, fittings are more subject to 
+change than couplings.  And indeed, fittings may themselves be added or
+removed from the ASM by the action of otherwise unrelated dependencies.
+
+Events 
+
+   As has been noted previously, events can be considered to be a class 
+of ASM dependencies.  A more formal definition is given in the glossary, 
+and will be repeated here:
+
+      A condition upon which a system is dependant with respect to
+      its ongoing activity (life cycle).
+      A dependency in which the specified concept is time-based and the 
+      concept instantiations are potential state transitions.
+
+   Event analysis has progressed far along in both theory and practice.
+One thing which ASM's could be add is the generalization of events as 
+dependencies, the recognition of less obvious events in the design process,
+and better mechanisms for implementing them in end products.  Events also
+necessitate a stronger consideration of the arguments of static vs dynamic 
+binding of dependencies.  This work has not progressed to that point, 
+but it is worth noting.   The early prototype produced what would be 
+considered early static binding.
+ 
+Behavioral Effects 
+
+   Behavioral effects of dependencies on ASM's deserve more treatment than
+can be given here. In the early prototype, the behavioral effect of 
+changing a dependency would be the equivalent of a macro expansion.  This
+is due to the early static generation of code by the prototype, in which
+all couplings are evaluated prior to system execution.
+
+Related Extempore
+
+   This paper began as an attempt to write a quick-and-dirty code generating
+script.  The author failed to make it quick, but it has turned out to be 
+quite a dirty experience.  
+
+   The disciplined specification and rigorous treatment of dependency
+theory is a matter for future concern.  I still think like a practitioner,
+in terms of spatial relationships rather than in numeric magnitudes.
+I continue to keep notes of extemporaneous thought on the subject; it is 
+proving a very fertile ground.  Some outgrowths follow.
+
+   In event analysis, we as an industry seem to have discovered a 
+heretofore unrealized dimension of systems we have worked with for years.
+These systems can be mechanized, manual or both, but we missed out all
+the same.  In reviewing the relationship of event-as-dependency, I began
+to think about a concept of a related (unspecified) analysis method.  The
+phrase that came to mind was "fact-based systems analysis."  It seems that
+traditional structured analysis techniques ignore external interfaces and 
+events, while event analysis ignores the language based concepts of
+structured analysis.  In fact-based analysis, the notation could provide for
+iteration, sequencing, and conditionals, but they would be expressed
+as assertions rather than procedural steps.
+
+   Warnier proposed that the structure of a software system can be derived 
+from the structure of input and output data [Warnier, 1976].  DeMarco 
+suggests that the isomorphism between program and data structure be used 
+to predict a metric he called the "decision count."  If there is iteration
+in the data structure, a need probably exists for at least one iterative 
+statement within the program.  In like manner, mutually exclusive and multi
+state data structures would infer the need for conditionals and multiple
+case conditionals in the software.  
+
+   There is more than a grain of truth to this, and many an
+analyst/designer/programmer would benefit by recognizing the isomorphisms
+explicitly.  Most of the techniques used by industry seek to control 
+or limit the effects of these dependencies across analysis domains, with
+varying degrees of success.  One of the strengths and weaknesses that
+data flow diagrams (DFD) have is their subjectivity to data-isomorphic forces.
+The DFD is almost as affected by subtle data manipulations as the 
+system itself would be.  It does not take much shifting of the data dimension
+before the DFD's structure breaks down and must be fixed or rewritten.
+
+   We can go farther than simple data-isomorphism.   The structure of all
+software can be decomposed into a series of dependencies.  The resultant
+fully factored system will evidence a high degree of isomorphism with respect
+to the specific meaning inherent in the system plus the unique form with 
+which the system was designed.  Data I/O isomorphism would become a 
+part of a larger causal relationship.
+
+Glossary
+
+   Behavior: Any externally observable activity.
+
+
+   Behavioral Effects: Any externally observable activities which describe
+      the semantic and syntactic content of the defining instance of a 
+      dependency. 
+
+   Coupling: A internal or external dependency whose behavioral effects may be 
+      reevaluated at one or more predefined events during ongoing system
+      activity.
+      The formal declaration of a change potential within the system.
+
+   Dependancy: An implicit or explicit requirement that, with respect to a 
+      specified concept, instantiations of that concept be altered if and
+      when the defining instance of the concept changes. 
+      A formal or informal potential for change.
+      The formal syntactic declaration of a dependency.
+      An "engineering break point" ( place Bassett references here)
+
+   Early Prototype: A code generator loosely based on concepts of 
+      couplings and fittings.  The prototype was written in about a 
+      thousand lines of AWK code.  It performed automated collection
+      and editing of disctinct text blocks.  Fittings were
+      based on two simple statements, PASTE and EVALUATE.  Couplings
+      were implemented as independent command line programs.
+
+   Event: A condition upon which a system is dependant with respect to
+      its ongoing activity (life cycle).
+      A dependency in which the specified concept is time-based and the 
+      concept instantiations are potential state transitions.
+
+   Scope Boundary: The limits of the system, with consideration to 
+      its whole life cycle, from system creation to destruction.
+
+References
+
+[DeMarco, 1982]
+	 DeMarco, T.   Controlling Software Projects: Management, 
+	 Measurement, and Estimation.  Englewood Cliffs, N.J.: 
+	 Prentice-Hall, 1982.
+
+[Warnier, 1976]
+         Warnier, J.D.   Logical Construction of Programs, 3rd ed., trans. 
+         BM Flanagan.  New York: Van Nostrand Reinhold, 1976.

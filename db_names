@@ -1,0 +1,8 @@
+# fieldnames="db_names "
+echo "Customer_id"
+echo "Customer_name"
+echo "Address_1"
+echo "Address_2
+echo "Phone_1"
+echo "Phone_2"
+echo "Zip_Code"

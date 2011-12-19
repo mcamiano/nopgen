@@ -1,0 +1,203 @@
+TITL 
+OBJ: 0 175 385 Block
+DESC 124
++Summary: A software template.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 345 205 Coupling
+DESC 208
++Summary: A device for joining two things or parts together.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: Random House Dictionary, 1980, Ballantine Books, NY. 
++
++References:
+
+OBJ: 0 635 205 Customer
+DESC 155
++Summary: A person who purchases and owns software artifacts.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 95 200 Dependency
+DESC 270
++Summary: An requirement that, with respect to a specified concept, instantiations
++   of that concept be altered if and when the defining instance of the concept 
++   changes.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 525 205 Developer
+DESC 148
++Summary: A person who creates and modifies artifacts.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 55 385 Fitting
+DESC 218
++Summary: A fixture or piece of apparatus.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: Bib: Britannica World Language edition of Funk & Wagnalls Standard
++   Dictionary
++
++References:
+
+OBJ: 1 620 25 Person
+DESC 118
++Summary: A human being.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 155 10 SoftwareArtifact
+DESC 243
++Summary: Any object made or modified by humans, especially one reflecting
++   workmanship.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: Bib: Random House Dictionary, 1980, Ballantine Books, NY.
++
++References:
+
+CON2 g 6 4 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 6 2 "" ""
+DESC 51
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 7 3 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 m 7 1 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 m 1 3 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 3 5 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 w 3 0 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+

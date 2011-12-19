@@ -1,0 +1,251 @@
+TITL 
+OBJ: 0 340 200 Block
+DESC 122
++Summary: A software template.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 140 200 Coupling
+DESC 206
++Summary: A device for joining two things or parts together.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: Random House Dictionary, 1980, Ballantine Books, NY. 
++
++References:
+
+OBJ: 0 600 210 Customer
+DESC 153
++Summary: A person who purchases and owns software artifacts.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 10 325 Dependency
+DESC 268
++Summary: An requirement that, with respect to a specified concept, instantiations
++   of that concept be altered if and when the defining instance of the concept 
++   changes.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 465 210 Developer
+DESC 146
++Summary: A person who creates and modifies artifacts.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 310 325 ExternalArtifact
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 250 200 Fitting
+DESC 216
++Summary: A fixture or piece of apparatus.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: Bib: Britannica World Language edition of Funk & Wagnalls Standard
++   Dictionary
++
++References:
+
+OBJ: 0 150 445 FittingParameter
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 25 445 InlineFitting
+DESC 101
++Summary:
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 1 545 20 Person
+DESC 116
++Summary: A human being.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes:
++
++References:
+
+OBJ: 0 155 10 SoftwareArtifact
+DESC 241
++Summary: Any object made or modified by humans, especially one reflecting
++   workmanship.
++
++States:
++
++External Inputs:
++
++External Outputs:
++
++Constraints:
++
++Notes: Bib: Random House Dictionary, 1980, Ballantine Books, NY.
++
++References:
+
+CON2 w 10 3 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 10 1 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 10 6 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 10 0 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 9 4 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 g 9 2 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+
+CON2 m 3 5 "" ""
+DESC 49
++Summary:
++
++Constraints:
++
++Notes:
++
++References:
+

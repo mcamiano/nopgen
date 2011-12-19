@@ -1,5 +1,0 @@
-  ON KEY ( INTERRUPT )
-    INITIALIZE ${2:-l}$1.* TO NULL
-    ERROR "User cancelled operation"
-    SLEEP 2
-    EXIT INPUT
