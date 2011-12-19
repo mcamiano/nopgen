@@ -1,7 +1,0 @@
-d:/bin/cat <<EOT
-cust_id
-cust_name
-phone
-address
-zip
-EOT
